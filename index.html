@@ -352,7 +352,7 @@ input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color:
 <script>
 // ─── CONFIG ───────────────────────────────────────────────
 const GOOGLE_CLIENT_ID = "232128500768-7bic3gnig1bro3o6js4db9jljs9ih9j1.apps.googleusercontent.com";
-const GOOGLE_SCOPES    = "https://www.googleapis.com/auth/contacts";
+const GOOGLE_SCOPES    = "https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly";
 const GMAPS_KEY        = "AIzaSyBPIrMTYK8JARJ_Gp9_9S0A_S0BKQIlAEI";
 const ETIQUETA_CLAUDE  = "Contactos Creado por CLAUDE COWORK";
 
@@ -987,26 +987,46 @@ async function addSingleContact(i) {
   const c = newC[i];
   const btn = document.getElementById('gc-btn-'+i);
   btn.textContent='...'; btn.disabled=true;
-  if(googleToken) {
-    const ok = await crearContactoGC(c);
-    if(ok) {
-      btn.textContent='✓ Añadido';
-      btn.style.cssText='background:var(--accent-light);border:1px solid var(--accent-border);color:var(--accent);height:28px;padding:0 10px;font-size:11px;border-radius:6px;cursor:default;font-family:inherit;';
-      gcEmails.push((c.email||'').toLowerCase());
-    } else {
-      btn.textContent='Error'; btn.disabled=false;
-      btn.style.background='var(--red-bg)'; btn.style.color='var(--red)';
-    }
-  } else {
-    // Sin OAuth: abrir formulario Google Contacts con datos
-    const url='https://contacts.google.com/new?'+new URLSearchParams({
-      givenName: c.nombre.split(' ')[0],
-      familyName: c.nombre.split(' ').slice(1).join(' '),
-      email: c.email||'', phone: c.tel||'',
-      company: c.empresa, jobTitle: c.cargo
+
+  console.log('=== AÑADIR CONTACTO ===');
+  console.log('googleToken:', googleToken ? 'OK ('+googleToken.substring(0,20)+'...)' : 'NULL - NO HAY TOKEN');
+  console.log('Contacto:', c.nombreCompleto, c.empresa);
+
+  if(!googleToken) {
+    alert('No estás conectado a Google Contacts.\nPulsa el botón "Conectar Google Contacts" arriba a la derecha primero.');
+    btn.textContent='+ Añadir'; btn.disabled=false;
+    return;
+  }
+
+  // Verificar que el token sigue válido
+  try {
+    const testR = await fetch('https://people.googleapis.com/v1/people/me?personFields=names', {
+      headers: { Authorization: 'Bearer '+googleToken }
     });
-    window.open(url,'_blank');
-    setTimeout(()=>{ btn.textContent='✓ Abierto'; btn.disabled=true; },500);
+    console.log('Test token status:', testR.status);
+    if(testR.status === 401) {
+      alert('Tu sesión de Google ha expirado.\nPulsa de nuevo "Conectar Google Contacts".');
+      btn.textContent='+ Añadir'; btn.disabled=false;
+      googleToken = null;
+      document.getElementById('btn-google').style.display='';
+      document.getElementById('user-badge').style.display='none';
+      return;
+    }
+  } catch(e) {
+    console.error('Error verificando token:', e);
+  }
+
+  const ok = await crearContactoGC(c);
+  if(ok) {
+    btn.textContent='✓ Añadido';
+    btn.style.cssText='background:var(--accent-light);border:1px solid var(--accent-border);color:var(--accent);height:28px;padding:0 10px;font-size:11px;border-radius:6px;cursor:default;font-family:inherit;';
+    gcEmails.push((c.email||'').toLowerCase());
+  } else {
+    btn.textContent='Error — ver consola';
+    btn.disabled=false;
+    btn.style.background='var(--red-bg)';
+    btn.style.color='var(--red)';
+    btn.style.borderColor='var(--red-border)';
   }
 }
 
