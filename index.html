@@ -373,6 +373,23 @@ let gcEmails     = [];
 let empresas     = [];
 let contactos    = [];
 
+// ─── TAG INPUT ────────────────────────────────────────────
+function addTag(e, wrapId, inpId) {
+  if(e.key==='Enter'||e.key===',') {
+    e.preventDefault();
+    const inp = document.getElementById(inpId);
+    const v = inp.value.trim();
+    if(!v) return;
+    const wrap = document.getElementById(wrapId);
+    const pill = document.createElement('div');
+    pill.className = 'tag-pill';
+    pill.innerHTML = v + ' <span class="rm" onclick="removeTag(this)">×</span>';
+    wrap.insertBefore(pill, inp);
+    inp.value = '';
+  }
+}
+function removeTag(el) { el.parentElement.remove(); }
+
 // ─── NAVIGATION ───────────────────────────────────────────
 function goStep(n) {
   document.querySelectorAll('.panel').forEach((p,i) => p.classList.toggle('active', i===n));
@@ -601,21 +618,54 @@ function toggleForm(empId) {
   tog.textContent = form.classList.contains('open') ? '▲ Cerrar' : '+ Añadir contacto';
 }
 
+function getSectoresSeleccionados(empId) {
+  return [...document.querySelectorAll('#fn-sector-'+empId+' option:checked')].map(o=>o.value);
+}
+function getFlotasSeleccionadas(empId) {
+  return [...document.querySelectorAll('#fn-vehiculo-'+empId+' option:checked')].map(o=>o.value);
+}
+
 function renderContactForm(emp) {
-  const etiqSector  = asignarEtiquetaSector(emp);
+  const etiqSector   = asignarEtiquetaSector(emp);
   const etiqVehiculo = asignarEtiquetaVehiculo(emp);
+  const webEmp = emp.website ? 'https://'+emp.website : '';
+
+  const SOLO_SECTOR = [
+    'CLIENTES FINALES AVES','CLIENTES FINALES CARNICAS',
+    'CLIENTES FINALES ALMACÉN / PLATAFORMA LOGISTICA','CLIENTES FINALES CATERING',
+    'CLIENTES FINALES CONGELADOS A DOMICILIO','CLIENTES FINALES FARMA',
+    'CLIENTES FINALES FLORES','CLIENTES FINALES FRUTA ROJA','CLIENTES FINALES FRUTAS',
+    'CLIENTES FINALES HELADOS','CLIENTES FINALES HIELO','CLIENTES FINALES HORECA',
+    'CLIENTES FINALES LACTEOS','CLIENTES FINALES PAN CONGELADO','CLIENTES FINALES PESCADO',
+    'CLIENTES FINALES PRODUCTORES ALIMENTOS','CLIENTES FINALES SUPERMERCADOS','CLIENTES FINALES VENDING'
+  ];
+  const SOLO_FLOTA = ['Clientes Finales LCV','Clientes Finales TRUCK','Clientes Finales TRAILER'];
+
   return `
-  <div class="form-section-title">Datos del contacto — empresa: ${emp.name}</div>
+  <div class="form-section-title">Nuevo contacto</div>
   <div class="form-row">
     <div class="form-group">
-      <label>Nombre completo *</label>
-      <input type="text" id="fn-nombre-${emp.id}" placeholder="Ej: Carlos Mendoza García" />
+      <label>Nombre *</label>
+      <input type="text" id="fn-nombre-${emp.id}" placeholder="Ej: Carlos" />
     </div>
     <div class="form-group">
+      <label>Primer apellido *</label>
+      <input type="text" id="fn-ap1-${emp.id}" placeholder="Ej: Mendoza" />
+    </div>
+    <div class="form-group">
+      <label>Segundo apellido</label>
+      <input type="text" id="fn-ap2-${emp.id}" placeholder="Ej: García" />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
       <label>Cargo *</label>
-      <input type="text" id="fn-cargo-${emp.id}" placeholder="Ej: Director de Flota" list="cargos-list" />
-      <datalist id="cargos-list">
+      <input type="text" id="fn-cargo-${emp.id}" placeholder="Ej: Director de Flota" list="cargos-list-${emp.id}" />
+      <datalist id="cargos-list-${emp.id}">
+        <option>Administrador Único</option>
+        <option>Gerente</option>
         <option>Gerente General</option>
+        <option>Director General</option>
         <option>Director de Flota</option>
         <option>Director de Compras</option>
         <option>Director de Mantenimiento</option>
@@ -623,6 +673,10 @@ function renderContactForm(emp) {
         <option>Director de Logística</option>
         <option>Director de Operaciones</option>
       </datalist>
+    </div>
+    <div class="form-group">
+      <label>Empresa (editable)</label>
+      <input type="text" id="fn-empresa-${emp.id}" value="${emp.name}" placeholder="Nombre de la empresa" />
     </div>
   </div>
   <div class="form-row">
@@ -637,30 +691,32 @@ function renderContactForm(emp) {
   </div>
   <div class="form-row">
     <div class="form-group">
-      <label>URL LinkedIn</label>
+      <label>Web de la empresa</label>
+      <input type="url" id="fn-web-${emp.id}" value="${webEmp}" placeholder="https://empresa.com" />
+    </div>
+    <div class="form-group">
+      <label>LinkedIn del contacto</label>
       <input type="url" id="fn-linkedin-${emp.id}" placeholder="https://linkedin.com/in/..." />
     </div>
   </div>
   <div class="form-row">
     <div class="form-group">
-      <label>Etiqueta de sector (autodetectada — puedes cambiarla)</label>
-      <select id="fn-sector-${emp.id}">
-        ${ETIQUETAS_SECTOR.map(e => `<option value="${e}" ${e===etiqSector||e===etiqVehiculo?'selected':''}>${e}</option>`).join('')}
+      <label>Etiquetas de sector (Ctrl+clic para varias)</label>
+      <select id="fn-sector-${emp.id}" multiple size="6" style="height:auto;padding:4px;">
+        ${SOLO_SECTOR.map(e => '<option value="'+e+'" '+(e===etiqSector?'selected':'')+'>'+e+'</option>').join('')}
       </select>
     </div>
     <div class="form-group">
-      <label>Tipo de flota</label>
-      <select id="fn-vehiculo-${emp.id}">
-        <option value="Clientes Finales LCV" ${etiqVehiculo==='Clientes Finales LCV'?'selected':''}>Clientes Finales LCV</option>
-        <option value="Clientes Finales TRUCK" ${etiqVehiculo==='Clientes Finales TRUCK'?'selected':''}>Clientes Finales TRUCK</option>
-        <option value="Clientes Finales TRAILER" ${etiqVehiculo==='Clientes Finales TRAILER'?'selected':''}>Clientes Finales TRAILER</option>
+      <label>Tipo de flota (Ctrl+clic para varias)</label>
+      <select id="fn-vehiculo-${emp.id}" multiple size="3" style="height:auto;padding:4px;">
+        ${SOLO_FLOTA.map(f => '<option value="'+f+'" '+(f===etiqVehiculo?'selected':'')+'>'+f+'</option>').join('')}
       </select>
     </div>
   </div>
   <div class="form-row">
     <div class="form-group">
       <label>Notas adicionales (opcional)</label>
-      <textarea id="fn-notas-${emp.id}" rows="2" placeholder="Información adicional sobre el contacto..."></textarea>
+      <textarea id="fn-notas-${emp.id}" rows="2" placeholder="Información adicional..."></textarea>
     </div>
   </div>
   <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;">
@@ -710,36 +766,42 @@ function generarNota(emp, cargo, notasExtra) {
 // ─── GUARDAR CONTACTO ────────────────────────────────────
 function guardarContacto(empId) {
   const nombre   = document.getElementById('fn-nombre-'+empId).value.trim();
+  const ap1      = document.getElementById('fn-ap1-'+empId).value.trim();
+  const ap2      = document.getElementById('fn-ap2-'+empId).value.trim();
   const cargo    = document.getElementById('fn-cargo-'+empId).value.trim();
+  const empresa  = document.getElementById('fn-empresa-'+empId).value.trim();
   const email    = document.getElementById('fn-email-'+empId).value.trim();
   const tel      = document.getElementById('fn-tel-'+empId).value.trim();
+  const webEmp   = document.getElementById('fn-web-'+empId).value.trim();
   const linkedin = document.getElementById('fn-linkedin-'+empId).value.trim();
-  const sector   = document.getElementById('fn-sector-'+empId).value;
-  const vehiculo = document.getElementById('fn-vehiculo-'+empId).value;
+  const sectores = getSectoresSeleccionados(empId);
+  const flotas   = getFlotasSeleccionadas(empId);
   const notasEx  = document.getElementById('fn-notas-'+empId).value.trim();
 
-  if(!nombre || !cargo) { alert('El nombre y el cargo son obligatorios.'); return; }
+  if(!nombre || !ap1 || !cargo) { alert('El nombre, primer apellido y cargo son obligatorios.'); return; }
 
+  const nombreCompleto = [nombre, ap1, ap2].filter(Boolean).join(' ');
   const emp = empresas.find(e => e.id===empId);
-  const nota = generarNota(emp, cargo, notasEx);
+  const nota = generarNota({name: empresa, types: emp.types}, cargo, notasEx);
 
   contactos.push({
     id: Date.now(),
-    empresa: emp.name,
-    domain: emp.website,
-    nombre, cargo, email, tel, linkedin,
-    etiquetas: [sector, vehiculo, ETIQUETA_CLAUDE].filter(Boolean),
+    empresa, domain: emp.website,
+    nombre, ap1, ap2, nombreCompleto,
+    cargo, email, tel,
+    webEmpresa: webEmp,
+    linkedin,
+    etiquetas: [...sectores, ...flotas, ETIQUETA_CLAUDE].filter(Boolean),
     notas: nota,
     added: false, exists: false
   });
 
-  // Marcar empresa como añadida
   toggleForm(empId);
   const badge = document.getElementById('emp-added-'+empId);
   if(badge) badge.style.display = 'inline';
 
   renderContactosList();
-  alert(`✓ Contacto "${nombre}" guardado. Puedes añadir más contactos de esta empresa.`);
+  alert('✓ Contacto "'+nombreCompleto+'" guardado.');
 }
 
 // ─── RENDER CONTACTOS ─────────────────────────────────────
@@ -754,12 +816,14 @@ function renderContactosList() {
     <div class="contact-card">
       <div class="contact-company">${c.empresa}</div>
       <div class="contact-body">
-        <div class="avatar">${c.nombre.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
+        <div class="avatar">${(c.nombre||'?')[0]}${(c.ap1||'')[0]||''}</div>
         <div class="contact-info">
-          <div class="contact-name">${c.nombre}</div>
+          <div class="contact-name">${c.nombreCompleto||c.nombre}</div>
           <div class="contact-role">${c.cargo}</div>
           ${c.email ? `<div class="contact-email">${c.email}</div>` : ''}
           ${c.tel ? `<div class="contact-tel">${c.tel}</div>` : ''}
+          ${c.webEmpresa ? `<div style="margin-top:4px;"><a href="${c.webEmpresa}" target="_blank" class="badge badge-blue">🌐 Web empresa</a></div>` : ''}
+          ${c.webEmpresa ? `<div style="margin-top:4px;"><a href="${c.webEmpresa}" target="_blank" class="badge badge-blue">🌐 Web empresa</a></div>` : ''}
           ${c.linkedin ? `<div style="margin-top:4px;"><a href="${c.linkedin}" target="_blank" class="badge badge-linkedin">LinkedIn →</a></div>` : ''}
           <div class="tags-row">${c.etiquetas.map(t=>`<span class="badge badge-accent">${t}</span>`).join('')}</div>
           <div class="notes-box"><div class="notes-label">Notas</div>${c.notas}</div>
@@ -788,7 +852,7 @@ function iniciarVerificacion() {
     () => {
       contactos.forEach(c => {
         c.exists = (c.email && gcEmails.includes(c.email.toLowerCase())) ||
-                   gcEmails.includes(c.nombre.toLowerCase());
+                   gcEmails.includes((c.nombreCompleto||c.nombre).toLowerCase());
       });
       mostrarResultados();
     });
@@ -809,9 +873,9 @@ function mostrarResultados() {
     <div class="contact-card" id="gc-card-${i}">
       <div class="contact-company">${c.empresa}</div>
       <div class="contact-body">
-        <div class="avatar">${c.nombre.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
+        <div class="avatar">${(c.nombre||'?')[0]}${(c.ap1||'')[0]||''}</div>
         <div class="contact-info">
-          <div class="contact-name">${c.nombre}</div>
+          <div class="contact-name">${c.nombreCompleto||c.nombre}</div>
           <div class="contact-role">${c.cargo}</div>
           ${c.email ? `<div class="contact-email">${c.email}</div>` : ''}
           ${c.tel ? `<div class="contact-tel">${c.tel}</div>` : ''}
@@ -829,21 +893,31 @@ function mostrarResultados() {
 // ─── AÑADIR A GOOGLE CONTACTS ─────────────────────────────
 async function crearContactoGC(c) {
   const urls = [];
-  if(c.linkedin) urls.push({ value: c.linkedin, type: 'PROFILE', formattedType: 'LinkedIn' });
+  if(c.webEmpresa) urls.push({ value: c.webEmpresa, type: 'WORK', formattedType: 'Empresa' });
+  if(c.linkedin)   urls.push({ value: c.linkedin,   type: 'PROFILE', formattedType: 'LinkedIn' });
 
   const body = {
-    names: [{ givenName: c.nombre.split(' ')[0], familyName: c.nombre.split(' ').slice(1).join(' ') }],
+    names: [{ givenName: c.nombre, middleName: c.ap1||'', familyName: c.ap2||'' }],
     organizations: [{ name: c.empresa, title: c.cargo }],
-    emailAddresses: c.email ? [{ value: c.email }] : [],
-    phoneNumbers: c.tel ? [{ value: c.tel }] : [],
-    biographies: [{ value: c.notas, contentType: 'TEXT_PLAIN' }],
+    emailAddresses: c.email ? [{ value: c.email, type: 'WORK' }] : [],
+    phoneNumbers:   c.tel   ? [{ value: c.tel,   type: 'MOBILE' }] : [],
+    biographies:    [{ value: c.notas, contentType: 'TEXT_PLAIN' }],
     urls: urls
   };
+
   const r = await fetch('https://people.googleapis.com/v1/people:createContact', {
     method: 'POST',
-    headers: { 'Authorization': 'Bearer '+googleToken, 'Content-Type': 'application/json' },
+    headers: {
+      'Authorization': 'Bearer '+googleToken,
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify(body)
   });
+
+  if(!r.ok) {
+    const err = await r.json().catch(()=>({}));
+    console.error('GC error:', err);
+  }
   return r.ok;
 }
 
