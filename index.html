@@ -284,6 +284,20 @@ input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color:
       </div>
       <div id="p1-alert"></div>
 
+      <div id="historial-bar" style="display:none;margin-bottom:12px;">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:12px;">
+          <span style="color:var(--text2);">Historial guardado:</span>
+          <span id="hist-procesadas" style="color:var(--green);font-weight:500;"></span>
+          <span id="hist-descartadas" style="color:var(--red);font-weight:500;"></span>
+          <span id="hist-pendientes" style="color:var(--amber);font-weight:500;"></span>
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;margin-left:auto;">
+            <input type="checkbox" id="mostrar-procesadas" onchange="renderEmpresas()" />
+            Mostrar procesadas/descartadas
+          </label>
+          <button class="btn btn-secondary btn-sm" onclick="limpiarHistorial()" style="color:var(--red);border-color:var(--red-border);">Limpiar historial</button>
+        </div>
+      </div>
+
       <div id="p1-result" style="display:none;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <span style="font-size:12px;color:var(--text2);" id="emp-count"></span>
@@ -370,8 +384,26 @@ const ETIQUETAS_SECTOR = [
 // ─── STATE ────────────────────────────────────────────────
 let googleToken  = null;
 let gcEmails     = [];
+let gcGruposMap  = {};
 let empresas     = [];
 let contactos    = [];
+
+// ─── HISTORIAL EMPRESAS (localStorage) ───────────────────
+const LS_KEY = 'prosp_empresas_historial';
+function getHistorial() { try { return JSON.parse(localStorage.getItem(LS_KEY)||'{}'); } catch(e) { return {}; } }
+function setEstadoEmpresa(nombre, estado) {
+  const h = getHistorial();
+  h[nombre.toLowerCase().trim()] = { estado, fecha: new Date().toLocaleDateString('es-ES') };
+  localStorage.setItem(LS_KEY, JSON.stringify(h));
+}
+function getEstadoEmpresa(nombre) { return getHistorial()[nombre.toLowerCase().trim()] || null; }
+function limpiarHistorial() {
+  if(confirm('¿Limpiar todo el historial?')) { localStorage.removeItem(LS_KEY); renderEmpresas(); }
+}
+function contarHistorial() {
+  const vals = Object.values(getHistorial());
+  return { total:vals.length, procesadas:vals.filter(v=>v.estado==='procesada').length, descartadas:vals.filter(v=>v.estado==='descartada').length, pendientes:vals.filter(v=>v.estado==='pendiente').length };
+}
 
 // ─── TAG INPUT ────────────────────────────────────────────
 function addTag(e, wrapId, inpId) {
@@ -596,10 +628,13 @@ function getDemoEmpresas() {
 function renderEmpresas() {
   document.getElementById('emp-count').textContent = empresas.length+' empresas encontradas';
   document.getElementById('emp-list').innerHTML = empresas.map(e => `
-    <div class="emp-card" id="emp-card-${e.id}">
+    <div class="emp-card" id="emp-card-${e.id}" style="${est && est.estado!=='pendiente' ? 'opacity:0.7;' : ''}">
       <div class="emp-card-header" onclick="toggleForm(${e.id})">
         <div style="flex:1;">
-          <div class="emp-name">${e.name}</div>
+          <div class="emp-name" style="display:flex;align-items:center;gap:8px;">
+            ${e.name}
+            ${estLabel ? `<span style="font-size:10px;font-weight:500;color:${estColor};">${estLabel} ${est.fecha}</span>` : ''}
+          </div>
           <div class="emp-addr">${e.address}</div>
           <div class="emp-meta">
             ${e.rating ? `<span class="badge badge-amber">★ ${e.rating}</span>` : ''}
@@ -610,19 +645,29 @@ function renderEmpresas() {
         <span style="font-size:11px;color:var(--text3);margin-top:2px;" id="emp-toggle-${e.id}">+ Añadir contacto</span>
       </div>
       <div class="emp-actions">
-        <button class="btn btn-linkedin btn-sm" onclick="abrirLinkedIn('${e.name}')">👤 Buscar personas en LinkedIn</button>
-        <button class="btn btn-secondary btn-sm" onclick="abrirLinkedInEmpresas('${e.name}')">🏢 Empresa en LinkedIn</button>
+        <button class="btn btn-linkedin btn-sm" onclick="abrirLinkedIn('${e.name}')">👤 Personas LinkedIn</button>
+        <button class="btn btn-secondary btn-sm" onclick="abrirLinkedInEmpresas('${e.name}')">🏢 Empresa LinkedIn</button>
         <button class="btn btn-secondary btn-sm" onclick="abrirEmpresiaEs('${e.name}')" style="border-color:#e85d04;color:#e85d04;">👔 Empresia.es</button>
         ${e.website ? `<button class="btn btn-secondary btn-sm" onclick="window.open('https://${e.website}','_blank')">Web →</button>` : ''}
         <button class="btn btn-primary btn-sm" onclick="toggleForm(${e.id})">+ Añadir contacto</button>
-        <span style="margin-left:auto;font-size:11px;color:var(--green);display:none;" id="emp-added-${e.id}">✓ añadido</span>
+        <div style="margin-left:auto;display:flex;gap:5px;align-items:center;">
+          <button class="btn btn-sm" onclick="marcarEmpresa('${e.name}','procesada')" style="border-color:var(--green-border);color:var(--green);background:var(--green-bg);" title="Marcar como procesada">✓</button>
+          <button class="btn btn-sm" onclick="marcarEmpresa('${e.name}','pendiente')" style="border-color:var(--amber-border);color:var(--amber);background:var(--amber-bg);" title="Marcar como pendiente">⏳</button>
+          <button class="btn btn-sm" onclick="marcarEmpresa('${e.name}','descartada')" style="border-color:var(--red-border);color:var(--red);background:var(--red-bg);" title="Descartar empresa">✕</button>
+        </div>
       </div>
       <div class="contact-form" id="form-${e.id}">
         ${renderContactForm(e)}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   document.getElementById('p1-progress').style.display = 'none';
   document.getElementById('p1-result').style.display   = 'block';
+}
+
+function marcarEmpresa(nombre, estado) {
+  setEstadoEmpresa(nombre, estado);
+  renderEmpresas();
 }
 
 function abrirLinkedIn(empresa) {
@@ -836,9 +881,7 @@ function guardarContacto(empId) {
   });
 
   toggleForm(empId);
-  const badge = document.getElementById('emp-added-'+empId);
-  if(badge) badge.style.display = 'inline';
-
+  setEstadoEmpresa(emp.name, 'procesada');
   renderContactosList();
   alert('✓ Contacto "'+nombreCompleto+'" guardado.');
 }
