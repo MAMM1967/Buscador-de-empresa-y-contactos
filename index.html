@@ -215,7 +215,7 @@ input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color:
     <div class="sidebar-div"></div>
     <div class="sidebar-section">Herramientas</div>
     <div class="sidebar-link" onclick="exportarCSV()">↓ Exportar CSV</div>
-    <div class="sidebar-link" onclick="window.open('https://www.linkedin.com/search/results/companies/?keywords=transporte+frigorif%C3%ADco+espa%C3%B1a','_blank')">↗ LinkedIn empresas</div>
+    <div class="sidebar-link" onclick="window.open('https://www.linkedin.com/search/results/people/?keywords=director+flota+transporte+frigor%C3%ADfico+espa%C3%B1a','_blank')">↗ LinkedIn empresas</div>
   </nav>
 
   <main class="main">
@@ -226,10 +226,31 @@ input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color:
       <div class="page-sub">Búsqueda real con Google Maps Places API. Abre LinkedIn de cada empresa para encontrar contactos.</div>
 
       <div class="card">
-        <div class="search-bar">
-          <div class="form-group" style="flex:2;min-width:200px;">
-            <label>Búsqueda</label>
-            <input type="text" id="search-query" value="transporte frigorífico" placeholder="Ej: distribución frigorífica..." />
+        <div class="form-row">
+          <div class="form-group" style="flex:3;">
+            <label>Búsquedas en Google Maps (Enter para añadir)</label>
+            <div class="tag-wrap" id="queries-wrap" onclick="document.getElementById('query-inp').focus()">
+              <div class="tag-pill">transporte frigorífico <span class="rm" onclick="removeTag(this)">×</span></div>
+              <div class="tag-pill">fabricante alimentación flota propia <span class="rm" onclick="removeTag(this)">×</span></div>
+              <div class="tag-pill">distribución alimentaria refrigerada <span class="rm" onclick="removeTag(this)">×</span></div>
+              <div class="tag-pill">cárnicas distribución propia <span class="rm" onclick="removeTag(this)">×</span></div>
+              <div class="tag-pill">congelados distribución <span class="rm" onclick="removeTag(this)">×</span></div>
+              <div class="tag-pill">logística cadena frío <span class="rm" onclick="removeTag(this)">×</span></div>
+              <input type="text" id="query-inp" placeholder="Añadir búsqueda..." onkeydown="addTag(event,'queries-wrap','query-inp')" />
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="flex:2;">
+            <label>Cargos para buscar en LinkedIn</label>
+            <div class="tag-wrap" id="cargos-linkedin-wrap" onclick="document.getElementById('cargo-li-inp').focus()">
+              <div class="tag-pill">Director de Flota <span class="rm" onclick="removeTag(this)">×</span></div>
+              <div class="tag-pill">Director de Compras <span class="rm" onclick="removeTag(this)">×</span></div>
+              <div class="tag-pill">Gerente General <span class="rm" onclick="removeTag(this)">×</span></div>
+              <div class="tag-pill">Director de Mantenimiento <span class="rm" onclick="removeTag(this)">×</span></div>
+              <div class="tag-pill">Director de Logística <span class="rm" onclick="removeTag(this)">×</span></div>
+              <input type="text" id="cargo-li-inp" placeholder="Añadir cargo..." onkeydown="addTag(event,'cargos-linkedin-wrap','cargo-li-inp')" />
+            </div>
           </div>
           <div class="form-group" style="min-width:160px;">
             <label>Región</label>
@@ -242,14 +263,16 @@ input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color:
             </select>
           </div>
           <div class="form-group" style="min-width:110px;">
-            <label>Resultados</label>
+            <label>Resultados por búsqueda</label>
             <select id="max-emp">
-              <option value="10">10</option>
-              <option value="20" selected>20</option>
-              <option value="60">60</option>
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="20">20</option>
             </select>
           </div>
-          <button class="btn btn-primary" onclick="buscarEmpresas()" style="align-self:flex-end;">Buscar</button>
+        </div>
+        <div style="display:flex;justify-content:flex-end;">
+          <button class="btn btn-primary" onclick="buscarEmpresas()">Buscar todas →</button>
         </div>
       </div>
 
@@ -417,50 +440,94 @@ function animateProgress(fillId, msgId, messages, onDone) {
   }, 600);
 }
 
-// ─── STEP 1: BUSCAR EMPRESAS ──────────────────────────────
+// ─── STEP 1: BUSCAR EMPRESAS (multi-query) ───────────────
+function getQueries() {
+  return [...document.getElementById('queries-wrap').querySelectorAll('.tag-pill')]
+    .map(p => p.textContent.replace('×','').trim()).filter(Boolean);
+}
+function getCargosLinkedIn() {
+  return [...document.getElementById('cargos-linkedin-wrap').querySelectorAll('.tag-pill')]
+    .map(p => p.textContent.replace('×','').trim()).filter(Boolean);
+}
+
+async function fetchQuery(query, region, maxR) {
+  const resp = await fetch('https://places.googleapis.com/v1/places:searchText', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': GMAPS_KEY,
+      'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.rating,places.websiteUri,places.nationalPhoneNumber,places.types,places.id'
+    },
+    body: JSON.stringify({ textQuery: query+' '+region, languageCode:'es', regionCode:'ES', maxResultCount: maxR })
+  });
+  const data = await resp.json();
+  return data.places || [];
+}
+
 async function buscarEmpresas() {
-  const query   = document.getElementById('search-query').value.trim() || 'transporte frigorífico';
+  const queries = getQueries();
   const region  = document.getElementById('region').value || 'España';
-  const maxR    = parseInt(document.getElementById('max-emp').value)||20;
+  const maxR    = parseInt(document.getElementById('max-emp').value)||10;
+
+  if(!queries.length) { alert('Añade al menos una búsqueda.'); return; }
 
   document.getElementById('p1-progress').style.display = 'block';
   document.getElementById('p1-result').style.display   = 'none';
   document.getElementById('p1-alert').innerHTML        = '';
 
-  animateProgress('p1-fill','p1-msg',
-    ['Conectando con Google Maps...','Buscando en '+region+'...','Filtrando resultados...','Procesando...'],
-    async () => {
-      try {
-        const resp = await fetch('https://places.googleapis.com/v1/places:searchText', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Goog-Api-Key': GMAPS_KEY,
-            'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.rating,places.websiteUri,places.nationalPhoneNumber,places.types,places.id'
-          },
-          body: JSON.stringify({ textQuery: query+' '+region, languageCode:'es', regionCode:'ES', maxResultCount: maxR })
-        });
-        const data = await resp.json();
-        if(data.places && data.places.length>0) {
-          empresas = data.places.map((p,i) => ({
-            id: i+1,
-            name: p.displayName?.text||'Sin nombre',
-            address: p.formattedAddress||'',
-            rating: p.rating||0,
-            website: (p.websiteUri||'').replace(/https?:\/\//,'').split('/')[0],
-            phone: p.nationalPhoneNumber||'',
-            types: p.types||[]
-          }));
-        } else {
-          empresas = getDemoEmpresas();
-          document.getElementById('p1-alert').innerHTML = '<div class="alert alert-warn">Sin resultados de Google Maps API. Verifica tu clave y que "Places API (New)" está habilitada. Mostrando ejemplos.</div>';
-        }
-      } catch(err) {
-        empresas = getDemoEmpresas();
-        document.getElementById('p1-alert').innerHTML = `<div class="alert alert-warn">Error Google Maps API: ${err.message}. Mostrando ejemplos.</div>`;
+  const msgs = queries.map((q,i) => `Buscando: "${q}"...`);
+  msgs.push('Eliminando duplicados...','Procesando resultados...');
+
+  let pct = 0;
+  const fillEl = document.getElementById('p1-fill');
+  const msgEl  = document.getElementById('p1-msg');
+  const step   = 90 / queries.length;
+
+  msgEl.textContent = msgs[0];
+  fillEl.style.width = '0%';
+
+  try {
+    const seen = new Set();
+    const allPlaces = [];
+
+    for(let i=0; i<queries.length; i++) {
+      msgEl.textContent = `Búsqueda ${i+1}/${queries.length}: "${queries[i]}"...`;
+      pct += step;
+      fillEl.style.width = pct+'%';
+      const places = await fetchQuery(queries[i], region, maxR);
+      for(const p of places) {
+        const key = (p.displayName?.text||'').toLowerCase().trim();
+        if(!seen.has(key)) { seen.add(key); allPlaces.push(p); }
       }
-      renderEmpresas();
-    });
+      await new Promise(r => setTimeout(r, 300)); // evitar rate limit
+    }
+
+    msgEl.textContent = 'Procesando resultados...';
+    fillEl.style.width = '100%';
+
+    if(allPlaces.length > 0) {
+      empresas = allPlaces.map((p,i) => ({
+        id: i+1,
+        name: p.displayName?.text||'Sin nombre',
+        address: p.formattedAddress||'',
+        rating: p.rating||0,
+        website: (p.websiteUri||'').replace(/https?:\/\//,'').split('/')[0],
+        phone: p.nationalPhoneNumber||'',
+        types: p.types||[]
+      }));
+    } else {
+      empresas = getDemoEmpresas();
+      document.getElementById('p1-alert').innerHTML = '<div class="alert alert-warn">Sin resultados de Google Maps API. Verifica tu clave y que "Places API (New)" está habilitada. Mostrando ejemplos.</div>';
+    }
+  } catch(err) {
+    empresas = getDemoEmpresas();
+    document.getElementById('p1-alert').innerHTML = `<div class="alert alert-warn">Error: ${err.message}. Mostrando ejemplos.</div>`;
+  }
+
+  setTimeout(() => {
+    document.getElementById('p1-progress').style.display = 'none';
+    renderEmpresas();
+  }, 400);
 }
 
 function getDemoEmpresas() {
@@ -490,10 +557,12 @@ function renderEmpresas() {
         <span style="font-size:11px;color:var(--text3);margin-top:2px;" id="emp-toggle-${e.id}">+ Añadir contacto</span>
       </div>
       <div class="emp-actions">
-        <button class="btn btn-linkedin btn-sm" onclick="abrirLinkedIn('${e.name}')">LinkedIn →</button>
+        <button class="btn btn-linkedin btn-sm" onclick="abrirLinkedIn('${e.name}')">👤 Buscar personas en LinkedIn</button>
+        <button class="btn btn-secondary btn-sm" onclick="abrirLinkedInEmpresas('${e.name}')">🏢 Empresa en LinkedIn</button>
+        <button class="btn btn-secondary btn-sm" onclick="abrirEmpresiaEs('${e.name}')" style="border-color:#e85d04;color:#e85d04;">👔 Empresia.es</button>
         ${e.website ? `<button class="btn btn-secondary btn-sm" onclick="window.open('https://${e.website}','_blank')">Web →</button>` : ''}
         <button class="btn btn-primary btn-sm" onclick="toggleForm(${e.id})">+ Añadir contacto</button>
-        <span style="margin-left:auto;font-size:11px;color:var(--green);display:none;" id="emp-added-${e.id}">✓ contacto añadido</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--green);display:none;" id="emp-added-${e.id}">✓ añadido</span>
       </div>
       <div class="contact-form" id="form-${e.id}">
         ${renderContactForm(e)}
@@ -504,8 +573,25 @@ function renderEmpresas() {
 }
 
 function abrirLinkedIn(empresa) {
-  const q = encodeURIComponent(empresa+' España');
+  // Abre búsqueda de PERSONAS en esa empresa con los cargos configurados
+  const cargos = getCargosLinkedIn();
+  const cargoQuery = cargos.length ? cargos[0] : 'director';
+  const q = encodeURIComponent(empresa);
+  const kw = encodeURIComponent(cargoQuery);
+  // Búsqueda de personas filtrando por empresa y cargo
+  window.open(`https://www.linkedin.com/search/results/people/?company=${q}&keywords=${kw}&origin=FACETED_SEARCH`, '_blank');
+}
+
+function abrirLinkedInEmpresas(empresa) {
+  const q = encodeURIComponent(empresa);
   window.open(`https://www.linkedin.com/search/results/companies/?keywords=${q}`, '_blank');
+}
+
+function abrirEmpresiaEs(empresa) {
+  // Limpia el nombre: quita SL, SA, SLU, etc. para mejor búsqueda
+  const nombre = empresa.replace(/(s\.?l\.?u?|s\.?a\.?|s\.?l|slp|s\.?a\.?u|sociedad|group|grupo)/gi,'').trim();
+  const q = encodeURIComponent(nombre);
+  window.open(`https://empresia.es/empresa/${q}`, '_blank');
 }
 
 function toggleForm(empId) {
