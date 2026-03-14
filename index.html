@@ -482,10 +482,10 @@ async function buscarEmpresas() {
   document.getElementById('p2-progress').style.display = 'block';
   document.getElementById('p2-result').style.display = 'none';
   document.getElementById('p2-error').innerHTML = '';
-  const region = document.getElementById('region').value || 'España';
-  const sectores = getTags('sectores-wrap');
+  const region = document.getElementById('region') ? document.getElementById('region').value : 'España';
+  const sectores = document.getElementById('sectores-wrap') ? getTags('sectores-wrap') : ['Transporte frigorífico'];
   const query = (sectores[0]||'transporte frigorífico') + ' ' + region;
-  const maxR = parseInt(document.getElementById('max-emp').value)||20;
+  const maxR = document.getElementById('max-emp') ? parseInt(document.getElementById('max-emp').value)||20 : 20;
 
   animateProgress('p2-fill','p2-msg',
     ['Conectando con Google Maps Places API...','Buscando empresas en '+region+'...','Filtrando por flota frigorífica...','Procesando resultados...'],
@@ -600,7 +600,7 @@ async function iniciarContactos() {
   const selIds = [...document.querySelectorAll('.emp-check:checked')].map(c => parseInt(c.dataset.id));
   const selEmpresas = empresas.filter(e => selIds.includes(e.id));
   const hk = HUNTER_KEY;
-  const cargos = getTags('cargos-wrap');
+  const cargos = document.getElementById('cargos-wrap') ? getTags('cargos-wrap') : ['Gerente General','Director de Flota','Director de Compras','Director de Mantenimiento','Director de Calidad'];
 
   document.getElementById('p3-progress').style.display = 'block';
   document.getElementById('p3-result').style.display = 'none';
