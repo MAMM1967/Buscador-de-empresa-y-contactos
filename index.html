@@ -427,8 +427,11 @@ function gSvg() {
   return `<svg width="15" height="15" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>`;
 }
 
+let gcGruposMap = {}; // nombre → resourceName
+
 async function precargarGCEmails() {
   gcEmails = [];
+  // Cargar emails existentes
   try {
     let url = 'https://people.googleapis.com/v1/people/me/connections?personFields=emailAddresses,names&pageSize=1000';
     while(url) {
@@ -440,7 +443,40 @@ async function precargarGCEmails() {
       });
       url = d.nextPageToken ? url.split('&pageToken')[0]+'&pageToken='+d.nextPageToken : null;
     }
-  } catch(e) { console.warn('Error GC:', e); }
+  } catch(e) { console.warn('Error GC emails:', e); }
+
+  // Cargar grupos/etiquetas existentes
+  try {
+    const r = await fetch('https://people.googleapis.com/v1/contactGroups?pageSize=200', {
+      headers: { Authorization: 'Bearer '+googleToken }
+    });
+    const d = await r.json();
+    gcGruposMap = {};
+    (d.contactGroups||[]).forEach(g => {
+      if(g.groupType === 'USER_CONTACT_GROUP') {
+        gcGruposMap[g.name] = g.resourceName;
+      }
+    });
+    console.log('Grupos cargados:', Object.keys(gcGruposMap).length, gcGruposMap);
+  } catch(e) { console.warn('Error GC grupos:', e); }
+}
+
+async function crearGrupoSiNoExiste(nombre) {
+  if(gcGruposMap[nombre]) return gcGruposMap[nombre];
+  try {
+    const r = await fetch('https://people.googleapis.com/v1/contactGroups', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer '+googleToken, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contactGroup: { name: nombre } })
+    });
+    const d = await r.json();
+    if(d.resourceName) {
+      gcGruposMap[nombre] = d.resourceName;
+      console.log('Grupo creado:', nombre, d.resourceName);
+      return d.resourceName;
+    }
+  } catch(e) { console.warn('Error creando grupo:', nombre, e); }
+  return null;
 }
 
 // ─── PROGRESS ─────────────────────────────────────────────
@@ -590,13 +626,9 @@ function renderEmpresas() {
 }
 
 function abrirLinkedIn(empresa) {
-  // Abre búsqueda de PERSONAS en esa empresa con los cargos configurados
-  const cargos = getCargosLinkedIn();
-  const cargoQuery = cargos.length ? cargos[0] : 'director';
+  // Busca personas de esa empresa directamente
   const q = encodeURIComponent(empresa);
-  const kw = encodeURIComponent(cargoQuery);
-  // Búsqueda de personas filtrando por empresa y cargo
-  window.open(`https://www.linkedin.com/search/results/people/?company=${q}&keywords=${kw}&origin=FACETED_SEARCH`, '_blank');
+  window.open('https://www.linkedin.com/search/results/people/?company='+q+'&origin=FACETED_SEARCH', '_blank');
 }
 
 function abrirLinkedInEmpresas(empresa) {
@@ -691,6 +723,12 @@ function renderContactForm(emp) {
   </div>
   <div class="form-row">
     <div class="form-group">
+      <label>Teléfono fijo empresa</label>
+      <input type="tel" id="fn-fijo-${emp.id}" placeholder="+34 9XX XXX XXX" />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
       <label>Web de la empresa</label>
       <input type="url" id="fn-web-${emp.id}" value="${webEmp}" placeholder="https://empresa.com" />
     </div>
@@ -772,6 +810,7 @@ function guardarContacto(empId) {
   const empresa  = document.getElementById('fn-empresa-'+empId).value.trim();
   const email    = document.getElementById('fn-email-'+empId).value.trim();
   const tel      = document.getElementById('fn-tel-'+empId).value.trim();
+  const fijo     = document.getElementById('fn-fijo-'+empId).value.trim();
   const webEmp   = document.getElementById('fn-web-'+empId).value.trim();
   const linkedin = document.getElementById('fn-linkedin-'+empId).value.trim();
   const sectores = getSectoresSeleccionados(empId);
@@ -788,7 +827,7 @@ function guardarContacto(empId) {
     id: Date.now(),
     empresa, domain: emp.website,
     nombre, ap1, ap2, nombreCompleto,
-    cargo, email, tel,
+    cargo, email, tel, fijo,
     webEmpresa: webEmp,
     linkedin,
     etiquetas: [...sectores, ...flotas, ETIQUETA_CLAUDE].filter(Boolean),
@@ -821,7 +860,8 @@ function renderContactosList() {
           <div class="contact-name">${c.nombreCompleto||c.nombre}</div>
           <div class="contact-role">${c.cargo}</div>
           ${c.email ? `<div class="contact-email">${c.email}</div>` : ''}
-          ${c.tel ? `<div class="contact-tel">${c.tel}</div>` : ''}
+          ${c.tel  ? `<div class="contact-tel">📱 ${c.tel}</div>`  : ''}
+          ${c.fijo ? `<div class="contact-tel">📞 ${c.fijo}</div>` : ''}
           ${c.webEmpresa ? `<div style="margin-top:4px;"><a href="${c.webEmpresa}" target="_blank" class="badge badge-blue">🌐 Web empresa</a></div>` : ''}
           ${c.webEmpresa ? `<div style="margin-top:4px;"><a href="${c.webEmpresa}" target="_blank" class="badge badge-blue">🌐 Web empresa</a></div>` : ''}
           ${c.linkedin ? `<div style="margin-top:4px;"><a href="${c.linkedin}" target="_blank" class="badge badge-linkedin">LinkedIn →</a></div>` : ''}
@@ -878,7 +918,8 @@ function mostrarResultados() {
           <div class="contact-name">${c.nombreCompleto||c.nombre}</div>
           <div class="contact-role">${c.cargo}</div>
           ${c.email ? `<div class="contact-email">${c.email}</div>` : ''}
-          ${c.tel ? `<div class="contact-tel">${c.tel}</div>` : ''}
+          ${c.tel  ? `<div class="contact-tel">📱 ${c.tel}</div>`  : ''}
+          ${c.fijo ? `<div class="contact-tel">📞 ${c.fijo}</div>` : ''}
           ${c.linkedin ? `<div style="margin-top:4px;"><a href="${c.linkedin}" target="_blank" class="badge badge-linkedin">LinkedIn →</a></div>` : ''}
           <div class="tags-row">${c.etiquetas.map(t=>`<span class="badge badge-accent">${t}</span>`).join('')}</div>
           <div class="notes-box"><div class="notes-label">Notas</div>${c.notas}</div>
@@ -893,22 +934,39 @@ function mostrarResultados() {
 // ─── AÑADIR A GOOGLE CONTACTS ─────────────────────────────
 async function crearContactoGC(c) {
   const urls = [];
-  if(c.webEmpresa) urls.push({ value: c.webEmpresa, type: 'WORK', formattedType: 'Empresa' });
+  if(c.webEmpresa) urls.push({ value: c.webEmpresa, type: 'WORK',    formattedType: 'Empresa'  });
   if(c.linkedin)   urls.push({ value: c.linkedin,   type: 'PROFILE', formattedType: 'LinkedIn' });
 
+  // Resolver resourceNames de etiquetas (crear si no existen)
+  const memberships = [];
+  for(const etiq of c.etiquetas) {
+    const rn = await crearGrupoSiNoExiste(etiq);
+    if(rn) memberships.push({ contactGroupMembership: { contactGroupResourceName: rn } });
+  }
+
   const body = {
-    names: [{ givenName: c.nombre, middleName: c.ap1||'', familyName: c.ap2||'' }],
-    organizations: [{ name: c.empresa, title: c.cargo }],
-    emailAddresses: c.email ? [{ value: c.email, type: 'WORK' }] : [],
-    phoneNumbers:   c.tel   ? [{ value: c.tel,   type: 'MOBILE' }] : [],
-    biographies:    [{ value: c.notas, contentType: 'TEXT_PLAIN' }],
-    urls: urls
+    names: [{
+      givenName:  c.nombre || '',
+      middleName: c.ap1    || '',
+      familyName: c.ap2    || ''
+    }],
+    organizations: [{ name: c.empresa, title: c.cargo, type: 'WORK' }],
+    emailAddresses: c.email ? [{ value: c.email, type: 'WORK'   }] : [],
+    phoneNumbers: [
+      ...(c.tel  ? [{ value: c.tel,  type: 'MOBILE' }] : []),
+      ...(c.fijo ? [{ value: c.fijo, type: 'WORK'   }] : [])
+    ],
+    biographies: [{ value: c.notas, contentType: 'TEXT_PLAIN' }],
+    urls: urls,
+    memberships: memberships
   };
+
+  console.log('Creando contacto GC:', JSON.stringify(body, null, 2));
 
   const r = await fetch('https://people.googleapis.com/v1/people:createContact', {
     method: 'POST',
     headers: {
-      'Authorization': 'Bearer '+googleToken,
+      'Authorization': 'Bearer ' + googleToken,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(body)
@@ -916,7 +974,10 @@ async function crearContactoGC(c) {
 
   if(!r.ok) {
     const err = await r.json().catch(()=>({}));
-    console.error('GC error:', err);
+    console.error('GC error:', r.status, JSON.stringify(err));
+    alert('Error Google Contacts: ' + (err.error?.message || r.status));
+  } else {
+    console.log('Contacto creado OK:', c.nombreCompleto);
   }
   return r.ok;
 }
