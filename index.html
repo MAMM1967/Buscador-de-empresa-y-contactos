@@ -8,183 +8,106 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
 :root {
-  --bg: #f4f2ee; --surface: #fff; --surface2: #f9f8f5;
-  --border: #e2dfd8; --border2: #ccc9c0;
-  --text: #1a1916; --text2: #6b6860; --text3: #9e9b94;
-  --blue: #1d4ed8; --blue-bg: #eff6ff; --blue-border: #bfdbfe;
-  --green: #15803d; --green-bg: #f0fdf4; --green-border: #bbf7d0;
-  --amber: #92400e; --amber-bg: #fffbeb; --amber-border: #fde68a;
-  --red: #991b1b; --red-bg: #fef2f2; --red-border: #fecaca;
-  --accent: #0f4c81; --accent-light: #e8f0fa; --accent-border: #c7d9f5;
-  --radius: 10px; --radius-sm: 6px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.07);
+  --bg:#f4f2ee;--surface:#fff;--surface2:#f9f8f5;
+  --border:#e2dfd8;--border2:#ccc9c0;
+  --text:#1a1916;--text2:#6b6860;--text3:#9e9b94;
+  --blue:#1d4ed8;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --green:#15803d;--green-bg:#f0fdf4;--green-border:#bbf7d0;
+  --amber:#92400e;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --red:#991b1b;--red-bg:#fef2f2;--red-border:#fecaca;
+  --accent:#0f4c81;--accent-light:#e8f0fa;--accent-border:#c7d9f5;
+  --radius:10px;--radius-sm:6px;--shadow:0 1px 3px rgba(0,0,0,0.07);
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
-
-.app-header {
-  background: var(--accent); color: white;
-  padding: 0 1.5rem; height: 54px;
-  display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 100;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-}
-.logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; }
-.logo-icon { width: 30px; height: 30px; background: rgba(255,255,255,0.18); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-.header-sub { font-size: 10px; opacity: 0.6; font-weight: 300; margin-top: 1px; }
-
-#btn-google {
-  background: white; color: #3c4043; border: 1px solid #dadce0;
-  border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 600;
-  cursor: pointer; display: flex; align-items: center; gap: 7px; font-family: inherit;
-}
-#btn-google:disabled { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.5); cursor: not-allowed; border-color: transparent; }
-#user-badge {
-  display: none; align-items: center; gap: 7px;
-  background: rgba(52,168,83,0.18); border: 1px solid rgba(52,168,83,0.4);
-  border-radius: 20px; padding: 5px 12px; font-size: 12px; color: #86efac; font-weight: 600;
-}
-.gc-dot { width: 7px; height: 7px; border-radius: 50%; background: #34a853; }
-
-.layout { display: flex; min-height: calc(100vh - 54px); }
-
-.sidebar {
-  width: 210px; background: var(--surface); border-right: 1px solid var(--border);
-  padding: 1.25rem 0; flex-shrink: 0;
-  position: sticky; top: 54px; height: calc(100vh - 54px); overflow-y: auto;
-}
-.sidebar-section { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); padding: 0 1.1rem; margin: 0 0 5px; }
-.nav-item {
-  display: flex; align-items: center; gap: 9px; padding: 8px 1.1rem;
-  cursor: pointer; color: var(--text2); font-size: 13px;
-  border-left: 3px solid transparent; transition: all 0.13s; user-select: none;
-}
-.nav-item:hover { background: var(--bg); color: var(--text); }
-.nav-item.active { background: var(--accent-light); color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
-.nav-item.done .step-num { background: var(--green); color: white; }
-.nav-item.done { color: var(--text2); }
-.step-num {
-  width: 19px; height: 19px; border-radius: 50%; background: var(--border);
-  color: var(--text2); font-size: 10px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.nav-item.active .step-num { background: var(--accent); color: white; }
-.sidebar-div { height: 1px; background: var(--border); margin: 10px 1.1rem; }
-.sidebar-link { display: flex; align-items: center; gap: 8px; padding: 7px 1.1rem; cursor: pointer; color: var(--text3); font-size: 12px; transition: color 0.13s; }
-.sidebar-link:hover { color: var(--blue); }
-
-.main { flex: 1; padding: 1.75rem; max-width: 900px; }
-.panel { display: none; }
-.panel.active { display: block; }
-.page-title { font-size: 20px; font-weight: 600; letter-spacing: -0.4px; margin-bottom: 3px; }
-.page-sub { font-size: 12px; color: var(--text2); margin-bottom: 1.5rem; }
-
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 12px; box-shadow: var(--shadow); }
-.card-title { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
-
-.alert { border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; line-height: 1.6; margin-bottom: 12px; }
-.alert-info { background: var(--blue-bg); border: 1px solid var(--blue-border); color: var(--blue); }
-.alert-success { background: var(--green-bg); border: 1px solid var(--green-border); color: var(--green); }
-.alert-warn { background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--amber); }
-
-.form-row { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
-.form-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 160px; }
-.form-group label { font-size: 11px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; }
-.form-group input, .form-group select, .form-group textarea {
-  padding: 0 11px; border: 1px solid var(--border); border-radius: var(--radius-sm);
-  font-size: 13px; font-family: inherit; background: var(--surface); color: var(--text);
-  transition: border-color 0.15s; height: 36px;
-}
-.form-group textarea { height: auto; padding: 8px 11px; resize: vertical; line-height: 1.5; }
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); }
-
-.tag-wrap {
-  display: flex; flex-wrap: wrap; gap: 5px; padding: 5px 8px;
-  border: 1px solid var(--border); border-radius: var(--radius-sm);
-  background: var(--surface); min-height: 36px; cursor: text; transition: border-color 0.15s;
-}
-.tag-wrap:focus-within { border-color: var(--accent); }
-.tag-pill { background: var(--accent-light); color: var(--accent); font-size: 11px; padding: 2px 8px; border-radius: 20px; display: flex; align-items: center; gap: 4px; font-weight: 500; }
-.tag-pill .rm { cursor: pointer; opacity: 0.5; font-size: 13px; }
-.tag-pill .rm:hover { opacity: 1; }
-.tag-wrap input { border: none; outline: none; font-size: 12px; font-family: inherit; background: transparent; color: var(--text); min-width: 80px; flex: 1; }
-
-.btn { height: 36px; padding: 0 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; font-family: inherit; cursor: pointer; border: 1px solid; transition: all 0.13s; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
-.btn-primary { background: var(--accent); border-color: var(--accent); color: white; }
-.btn-primary:hover { background: #163d6e; }
-.btn-secondary { background: var(--surface); border-color: var(--border); color: var(--text); }
-.btn-secondary:hover { background: var(--bg); }
-.btn-success { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
-.btn-success:hover { background: #dcfce7; }
-.btn-linkedin { background: #0a66c2; border-color: #0a66c2; color: white; }
-.btn-linkedin:hover { background: #084d99; }
-.btn-sm { height: 28px; padding: 0 10px; font-size: 11px; }
-.btn:disabled { opacity: 0.4; cursor: default; }
-
-.progress-wrap { margin: 10px 0; }
-.progress-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-.progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.5s ease; }
-.progress-msg { font-size: 12px; color: var(--text2); margin-top: 5px; }
-
-.results-list { max-height: 600px; overflow-y: auto; padding-right: 2px; }
-.results-list::-webkit-scrollbar { width: 4px; }
-.results-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-/* EMPRESA CARD */
-.emp-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); margin-bottom: 10px; overflow: hidden;
-  box-shadow: var(--shadow); transition: border-color 0.13s;
-}
-.emp-card-header { padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
-.emp-card-header:hover { background: var(--surface2); }
-.emp-name { font-size: 13px; font-weight: 600; }
-.emp-addr { font-size: 11px; color: var(--text2); margin-top: 2px; }
-.emp-meta { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-.emp-actions { display: flex; gap: 6px; padding: 8px 14px; background: var(--surface2); border-top: 1px solid var(--border); flex-wrap: wrap; align-items: center; }
-
-/* CONTACT FORM */
-.contact-form { padding: 14px; border-top: 1px solid var(--border); background: var(--bg); display: none; }
-.contact-form.open { display: block; }
-.form-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 10px; }
-
-/* CONTACT CARD (resultado) */
-.contact-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 8px; box-shadow: var(--shadow); }
-.contact-company { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
-.contact-body { display: flex; gap: 12px; align-items: flex-start; }
-.avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.contact-info { flex: 1; }
-.contact-name { font-size: 14px; font-weight: 600; }
-.contact-role { font-size: 11px; color: var(--text2); margin-top: 2px; }
-.contact-email { font-size: 12px; color: var(--blue); margin-top: 4px; font-family: 'DM Mono', monospace; }
-.contact-tel { font-size: 11px; color: var(--text2); margin-top: 2px; }
-.notes-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 11px; color: var(--text2); line-height: 1.6; margin-top: 10px; }
-.notes-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 3px; }
-.tags-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
-
-.badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 20px; }
-.badge-blue { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
-.badge-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
-.badge-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
-.badge-gray { background: var(--bg); color: var(--text2); border: 1px solid var(--border); }
-.badge-accent { background: var(--accent-light); color: var(--accent); border: 1px solid var(--accent-border); }
-.badge-linkedin { background: #e8f0f9; color: #0a66c2; border: 1px solid #bdd4ee; }
-
-.metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.25rem; }
-.metric { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
-.metric-val { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; }
-.metric-label { font-size: 11px; color: var(--text2); margin-top: 3px; }
-
-.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-.divider { height: 1px; background: var(--border); margin: 1.1rem 0; }
-input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color: var(--accent); }
-
-.btn-add-sm { height: 28px; padding: 0 10px; font-size: 11px; font-weight: 500; font-family: inherit; cursor: pointer; border-radius: var(--radius-sm); background: var(--green-bg); border: 1px solid var(--green-border); color: var(--green); white-space: nowrap; transition: all 0.13s; }
-.btn-add-sm:disabled { opacity: 0.4; cursor: default; }
-.empty-state { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: 13px; }
-
-.search-bar { display: flex; gap: 10px; margin-bottom: 1rem; flex-wrap: wrap; align-items: flex-end; }
-.search-bar .form-group { margin-bottom: 0; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
+.app-header{background:var(--accent);color:white;padding:0 1.5rem;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.18);}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;}
+.logo-icon{width:30px;height:30px;background:rgba(255,255,255,0.18);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+#btn-google{background:white;color:#3c4043;border:1px solid #dadce0;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;font-family:inherit;}
+#btn-google:disabled{background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);cursor:not-allowed;border-color:transparent;}
+#user-badge{display:none;align-items:center;gap:7px;background:rgba(52,168,83,0.18);border:1px solid rgba(52,168,83,0.4);border-radius:20px;padding:5px 12px;font-size:12px;color:#86efac;font-weight:600;}
+.layout{display:flex;min-height:calc(100vh - 54px);}
+.sidebar{width:210px;background:var(--surface);border-right:1px solid var(--border);padding:1.25rem 0;flex-shrink:0;position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto;}
+.sidebar-section{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);padding:0 1.1rem;margin:0 0 5px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 1.1rem;cursor:pointer;color:var(--text2);font-size:13px;border-left:3px solid transparent;transition:all 0.13s;user-select:none;}
+.nav-item:hover{background:var(--bg);color:var(--text);}
+.nav-item.active{background:var(--accent-light);color:var(--accent);border-left-color:var(--accent);font-weight:500;}
+.nav-item.done .step-num{background:var(--green);color:white;}
+.step-num{width:19px;height:19px;border-radius:50%;background:var(--border);color:var(--text2);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-item.active .step-num{background:var(--accent);color:white;}
+.sidebar-div{height:1px;background:var(--border);margin:10px 1.1rem;}
+.sidebar-link{display:flex;align-items:center;gap:8px;padding:7px 1.1rem;cursor:pointer;color:var(--text3);font-size:12px;transition:color 0.13s;}
+.sidebar-link:hover{color:var(--blue);}
+.main{flex:1;padding:1.75rem;max-width:900px;}
+.panel{display:none;}.panel.active{display:block;}
+.page-title{font-size:20px;font-weight:600;letter-spacing:-0.4px;margin-bottom:3px;}
+.page-sub{font-size:12px;color:var(--text2);margin-bottom:1.5rem;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:12px;box-shadow:var(--shadow);}
+.alert{border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;line-height:1.6;margin-bottom:12px;}
+.alert-info{background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue);}
+.alert-success{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);}
+.alert-warn{background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber);}
+.form-row{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+.form-group{display:flex;flex-direction:column;gap:5px;flex:1;min-width:140px;}
+.form-group label{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em;}
+.form-group input,.form-group select,.form-group textarea{padding:0 11px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;background:var(--surface);color:var(--text);transition:border-color 0.15s;height:36px;}
+.form-group textarea{height:auto;padding:8px 11px;resize:vertical;line-height:1.5;}
+.form-group select[multiple]{height:auto;padding:4px;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--accent);}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:5px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);min-height:36px;cursor:text;transition:border-color 0.15s;}
+.tag-wrap:focus-within{border-color:var(--accent);}
+.tag-pill{background:var(--accent-light);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:20px;display:flex;align-items:center;gap:4px;font-weight:500;}
+.tag-pill .rm{cursor:pointer;opacity:0.5;font-size:13px;}.tag-pill .rm:hover{opacity:1;}
+.tag-wrap input{border:none;outline:none;font-size:12px;font-family:inherit;background:transparent;color:var(--text);min-width:80px;flex:1;}
+.btn{height:36px;padding:0 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;border:1px solid;transition:all 0.13s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:white;}.btn-primary:hover{background:#163d6e;}
+.btn-secondary{background:var(--surface);border-color:var(--border);color:var(--text);}.btn-secondary:hover{background:var(--bg);}
+.btn-success{background:var(--green-bg);border-color:var(--green-border);color:var(--green);}.btn-success:hover{background:#dcfce7;}
+.btn-linkedin{background:#0a66c2;border-color:#0a66c2;color:white;}.btn-linkedin:hover{background:#084d99;}
+.btn-sm{height:28px;padding:0 10px;font-size:11px;}.btn:disabled{opacity:0.4;cursor:default;}
+.progress-wrap{margin:10px 0;}
+.progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.5s ease;}
+.progress-msg{font-size:12px;color:var(--text2);margin-top:5px;}
+.results-list{max-height:600px;overflow-y:auto;padding-right:2px;}
+.results-list::-webkit-scrollbar{width:4px;}
+.results-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.emp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;box-shadow:var(--shadow);}
+.emp-card-header{padding:12px 14px;display:flex;gap:10px;align-items:flex-start;cursor:pointer;}
+.emp-card-header:hover{background:var(--surface2);}
+.emp-actions{display:flex;gap:6px;padding:8px 14px;background:var(--surface2);border-top:1px solid var(--border);flex-wrap:wrap;align-items:center;}
+.contact-form{padding:14px;border-top:1px solid var(--border);background:var(--bg);display:none;}
+.contact-form.open{display:block;}
+.form-section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);margin-bottom:10px;}
+.contact-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:8px;box-shadow:var(--shadow);}
+.contact-company{font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
+.contact-body{display:flex;gap:12px;align-items:flex-start;}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.contact-info{flex:1;}
+.contact-name{font-size:14px;font-weight:600;}
+.contact-role{font-size:11px;color:var(--text2);margin-top:2px;}
+.contact-email{font-size:12px;color:var(--blue);margin-top:4px;font-family:'DM Mono',monospace;}
+.contact-tel{font-size:11px;color:var(--text2);margin-top:2px;}
+.notes-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;font-size:11px;color:var(--text2);line-height:1.6;margin-top:10px;}
+.notes-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);margin-bottom:3px;}
+.tags-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
+.badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;}
+.badge-blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);}
+.badge-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+.badge-amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);}
+.badge-gray{background:var(--bg);color:var(--text2);border:1px solid var(--border);}
+.badge-accent{background:var(--accent-light);color:var(--accent);border:1px solid var(--accent-border);}
+.badge-linkedin{background:#e8f0f9;color:#0a66c2;border:1px solid #bdd4ee;}
+.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem;}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);}
+.metric-val{font-size:26px;font-weight:600;letter-spacing:-0.5px;}
+.metric-label{font-size:11px;color:var(--text2);margin-top:3px;}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);}
+.divider{height:1px;background:var(--border);margin:1.1rem 0;}
+input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--accent);}
+.btn-add-sm{height:28px;padding:0 10px;font-size:11px;font-weight:500;font-family:inherit;cursor:pointer;border-radius:var(--radius-sm);background:var(--green-bg);border:1px solid var(--green-border);color:var(--green);white-space:nowrap;transition:all 0.13s;}
+.btn-add-sm:disabled{opacity:0.4;cursor:default;}
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--text3);font-size:13px;}
 </style>
 </head>
 <body>
@@ -194,11 +117,11 @@ input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color:
     <div class="logo-icon">❄</div>
     <div>
       <div>Prospector Flotas Frigoríficas</div>
-      <div class="header-sub">Google Maps · LinkedIn · Google Contacts</div>
+      <div style="font-size:10px;opacity:0.6;font-weight:300;margin-top:1px;">Google Maps · LinkedIn · Empresia.es · Google Contacts</div>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:10px;">
-    <div id="user-badge"><div class="gc-dot"></div><span id="user-name">Google Contacts</span></div>
+    <div id="user-badge"><div style="width:7px;height:7px;border-radius:50%;background:#34a853;"></div><span id="user-name">Google Contacts</span></div>
     <button id="btn-google" onclick="conectarGoogle()">
       <svg width="15" height="15" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
       Conectar Google Contacts
@@ -210,25 +133,25 @@ input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color:
   <nav class="sidebar">
     <div class="sidebar-section">Pasos</div>
     <div class="nav-item active" id="nav-0" onclick="goStep(0)"><div class="step-num">1</div>Buscar empresas</div>
-    <div class="nav-item" id="nav-1" onclick="goStep(1)"><div class="step-num">2</div>Añadir contactos</div>
+    <div class="nav-item" id="nav-1" onclick="goStep(1)"><div class="step-num">2</div>Contactos añadidos</div>
     <div class="nav-item" id="nav-2" onclick="goStep(2)"><div class="step-num">3</div>Google Contacts</div>
     <div class="sidebar-div"></div>
-    <div class="sidebar-section">Herramientas</div>
+    <div class="sidebar-section">Acciones</div>
     <div class="sidebar-link" onclick="exportarCSV()">↓ Exportar CSV</div>
-    <div class="sidebar-link" onclick="window.open('https://www.linkedin.com/search/results/people/?keywords=director+flota+transporte+frigor%C3%ADfico+espa%C3%B1a','_blank')">↗ LinkedIn empresas</div>
+    <div class="sidebar-link" onclick="limpiarHistorial()" style="color:var(--red);">✕ Limpiar historial</div>
   </nav>
 
   <main class="main">
 
-    <!-- PASO 1: BUSCAR EMPRESAS -->
+    <!-- PASO 1 -->
     <div class="panel active" id="panel-0">
       <div class="page-title">Buscar empresas</div>
-      <div class="page-sub">Búsqueda real con Google Maps Places API. Abre LinkedIn de cada empresa para encontrar contactos.</div>
+      <div class="page-sub">Búsqueda múltiple con Google Maps. Abre LinkedIn y Empresia.es para encontrar contactos.</div>
 
       <div class="card">
         <div class="form-row">
           <div class="form-group" style="flex:3;">
-            <label>Búsquedas en Google Maps (Enter para añadir)</label>
+            <label>Búsquedas (Enter para añadir)</label>
             <div class="tag-wrap" id="queries-wrap" onclick="document.getElementById('query-inp').focus()">
               <div class="tag-pill">transporte frigorífico <span class="rm" onclick="removeTag(this)">×</span></div>
               <div class="tag-pill">fabricante alimentación flota propia <span class="rm" onclick="removeTag(this)">×</span></div>
@@ -241,18 +164,7 @@ input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color:
           </div>
         </div>
         <div class="form-row">
-          <div class="form-group" style="flex:2;">
-            <label>Cargos para buscar en LinkedIn</label>
-            <div class="tag-wrap" id="cargos-linkedin-wrap" onclick="document.getElementById('cargo-li-inp').focus()">
-              <div class="tag-pill">Director de Flota <span class="rm" onclick="removeTag(this)">×</span></div>
-              <div class="tag-pill">Director de Compras <span class="rm" onclick="removeTag(this)">×</span></div>
-              <div class="tag-pill">Gerente General <span class="rm" onclick="removeTag(this)">×</span></div>
-              <div class="tag-pill">Director de Mantenimiento <span class="rm" onclick="removeTag(this)">×</span></div>
-              <div class="tag-pill">Director de Logística <span class="rm" onclick="removeTag(this)">×</span></div>
-              <input type="text" id="cargo-li-inp" placeholder="Añadir cargo..." onkeydown="addTag(event,'cargos-linkedin-wrap','cargo-li-inp')" />
-            </div>
-          </div>
-          <div class="form-group" style="min-width:160px;">
+          <div class="form-group" style="min-width:180px;">
             <label>Región</label>
             <select id="region">
               <option value="España">España entera</option>
@@ -262,17 +174,17 @@ input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color:
               <option>Valladolid</option><option>Alicante</option><option>Las Palmas</option>
             </select>
           </div>
-          <div class="form-group" style="min-width:110px;">
-            <label>Resultados por búsqueda</label>
+          <div class="form-group" style="max-width:130px;">
+            <label>Resultados / búsqueda</label>
             <select id="max-emp">
               <option value="5">5</option>
               <option value="10" selected>10</option>
               <option value="20">20</option>
             </select>
           </div>
-        </div>
-        <div style="display:flex;justify-content:flex-end;">
-          <button class="btn btn-primary" onclick="buscarEmpresas()">Buscar todas →</button>
+          <div style="display:flex;align-items:flex-end;">
+            <button class="btn btn-primary" onclick="buscarEmpresas()">Buscar todas →</button>
+          </div>
         </div>
       </div>
 
@@ -286,56 +198,46 @@ input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color:
 
       <div id="historial-bar" style="display:none;margin-bottom:12px;">
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:12px;">
-          <span style="color:var(--text2);">Historial guardado:</span>
+          <span style="color:var(--text2);">Historial:</span>
           <span id="hist-procesadas" style="color:var(--green);font-weight:500;"></span>
           <span id="hist-descartadas" style="color:var(--red);font-weight:500;"></span>
           <span id="hist-pendientes" style="color:var(--amber);font-weight:500;"></span>
-          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;margin-left:auto;">
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;margin-left:auto;font-size:12px;">
             <input type="checkbox" id="mostrar-procesadas" onchange="renderEmpresas()" />
-            Mostrar procesadas/descartadas
+            Mostrar todas
           </label>
-          <button class="btn btn-secondary btn-sm" onclick="limpiarHistorial()" style="color:var(--red);border-color:var(--red-border);">Limpiar historial</button>
         </div>
       </div>
 
       <div id="p1-result" style="display:none;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <span style="font-size:12px;color:var(--text2);" id="emp-count"></span>
-          <button class="btn btn-primary btn-sm" onclick="goStep(1)">Ver contactos añadidos →</button>
+          <button class="btn btn-primary btn-sm" onclick="goStep(1)">Ver contactos →</button>
         </div>
         <div class="results-list" id="emp-list"></div>
       </div>
     </div>
 
-    <!-- PASO 2: CONTACTOS -->
+    <!-- PASO 2 -->
     <div class="panel" id="panel-1">
       <div class="page-title">Contactos añadidos</div>
-      <div class="page-sub">Contactos que has introducido manualmente desde LinkedIn u otras fuentes</div>
-
-      <div id="p2-empty" class="empty-state">
-        Todavía no has añadido ningún contacto.<br>
-        Ve al paso 1, abre LinkedIn de cada empresa y añade los contactos aquí.
-      </div>
-
+      <div class="page-sub">Contactos introducidos manualmente desde LinkedIn, Empresia.es u otras fuentes</div>
+      <div id="p2-empty" class="empty-state">Todavía no has añadido ningún contacto.<br>Ve al paso 1 y pulsa "+ Añadir contacto" en cada empresa.</div>
       <div id="p2-list" style="display:none;">
         <div style="font-size:12px;color:var(--text2);margin-bottom:10px;" id="p2-count"></div>
         <div class="results-list" id="contactos-list"></div>
       </div>
-
       <div class="nav-row">
         <button class="btn btn-secondary" onclick="goStep(0)">← Buscar más empresas</button>
         <button class="btn btn-primary" onclick="goStep(2);iniciarVerificacion()">Guardar en Google Contacts →</button>
       </div>
     </div>
 
-    <!-- PASO 3: GOOGLE CONTACTS -->
+    <!-- PASO 3 -->
     <div class="panel" id="panel-2">
       <div class="page-title">Google Contacts</div>
-      <div class="page-sub">Verifica duplicados y añade los contactos nuevos directamente</div>
-
-      <div id="p3-gc-warn" class="alert alert-warn" style="display:none;">
-        Conecta Google Contacts (botón arriba a la derecha) para verificar duplicados y añadir automáticamente.
-      </div>
+      <div class="page-sub">Verifica duplicados y añade los nuevos contactos directamente</div>
+      <div id="p3-gc-warn" class="alert alert-warn" style="display:none;">Conecta Google Contacts (botón arriba a la derecha) para verificar duplicados y añadir automáticamente.</div>
       <div id="p3-progress" style="display:none;" class="card">
         <div class="progress-wrap">
           <div class="progress-bar"><div class="progress-fill" id="p3-fill" style="width:0%"></div></div>
@@ -364,11 +266,12 @@ input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color:
 </div>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────────
-const GOOGLE_CLIENT_ID = "232128500768-7bic3gnig1bro3o6js4db9jljs9ih9j1.apps.googleusercontent.com";
-const GOOGLE_SCOPES    = "https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly";
-const GMAPS_KEY        = "AIzaSyBPIrMTYK8JARJ_Gp9_9S0A_S0BKQIlAEI";
-const ETIQUETA_CLAUDE  = "Contactos Creado por CLAUDE COWORK";
+// ── CONFIG ─────────────────────────────────────────────────
+const GOOGLE_CLIENT_ID = '232128500768-7bic3gnig1bro3o6js4db9jljs9ih9j1.apps.googleusercontent.com';
+const GOOGLE_SCOPES    = 'https://www.googleapis.com/auth/contacts https://www.googleapis.com/auth/contacts.readonly';
+const GMAPS_KEY        = 'AIzaSyBPIrMTYK8JARJ_Gp9_9S0A_S0BKQIlAEI';
+const ETIQUETA_CLAUDE  = 'Contactos Creado por CLAUDE COWORK';
+const LS_KEY           = 'prosp_empresas_historial';
 
 const ETIQUETAS_SECTOR = [
   'CLIENTES FINALES AVES','CLIENTES FINALES CARNICAS',
@@ -377,19 +280,18 @@ const ETIQUETAS_SECTOR = [
   'CLIENTES FINALES FLORES','CLIENTES FINALES FRUTA ROJA','CLIENTES FINALES FRUTAS',
   'CLIENTES FINALES HELADOS','CLIENTES FINALES HIELO','CLIENTES FINALES HORECA',
   'CLIENTES FINALES LACTEOS','CLIENTES FINALES PAN CONGELADO','CLIENTES FINALES PESCADO',
-  'CLIENTES FINALES PRODUCTORES ALIMENTOS','CLIENTES FINALES SUPERMERCADOS','CLIENTES FINALES VENDING',
-  'Clientes Finales LCV','Clientes Finales TRAILER','Clientes Finales TRUCK'
+  'CLIENTES FINALES PRODUCTORES ALIMENTOS','CLIENTES FINALES SUPERMERCADOS','CLIENTES FINALES VENDING'
 ];
+const ETIQUETAS_FLOTA = ['Clientes Finales LCV','Clientes Finales TRUCK','Clientes Finales TRAILER'];
 
-// ─── STATE ────────────────────────────────────────────────
-let googleToken  = null;
-let gcEmails     = [];
-let gcGruposMap  = {};
-let empresas     = [];
-let contactos    = [];
+// ── STATE ──────────────────────────────────────────────────
+let googleToken = null;
+let gcEmails    = [];
+let gcGruposMap = {};
+let empresas    = [];
+let contactos   = [];
 
-// ─── HISTORIAL EMPRESAS (localStorage) ───────────────────
-const LS_KEY = 'prosp_empresas_historial';
+// ── HISTORIAL ──────────────────────────────────────────────
 function getHistorial() { try { return JSON.parse(localStorage.getItem(LS_KEY)||'{}'); } catch(e) { return {}; } }
 function setEstadoEmpresa(nombre, estado) {
   const h = getHistorial();
@@ -398,22 +300,31 @@ function setEstadoEmpresa(nombre, estado) {
 }
 function getEstadoEmpresa(nombre) { return getHistorial()[nombre.toLowerCase().trim()] || null; }
 function limpiarHistorial() {
-  if(confirm('¿Limpiar todo el historial?')) { localStorage.removeItem(LS_KEY); renderEmpresas(); }
+  if (confirm('¿Limpiar todo el historial? Las empresas volverán a aparecer.')) {
+    localStorage.removeItem(LS_KEY);
+    if (empresas.length) renderEmpresas();
+  }
 }
 function contarHistorial() {
   const vals = Object.values(getHistorial());
-  return { total:vals.length, procesadas:vals.filter(v=>v.estado==='procesada').length, descartadas:vals.filter(v=>v.estado==='descartada').length, pendientes:vals.filter(v=>v.estado==='pendiente').length };
+  return {
+    total: vals.length,
+    procesadas:  vals.filter(function(v){ return v.estado==='procesada'; }).length,
+    descartadas: vals.filter(function(v){ return v.estado==='descartada'; }).length,
+    pendientes:  vals.filter(function(v){ return v.estado==='pendiente'; }).length
+  };
 }
+function marcarEmpresa(nombre, estado) { setEstadoEmpresa(nombre, estado); renderEmpresas(); }
 
-// ─── TAG INPUT ────────────────────────────────────────────
+// ── TAG INPUT ──────────────────────────────────────────────
 function addTag(e, wrapId, inpId) {
-  if(e.key==='Enter'||e.key===',') {
+  if (e.key === 'Enter' || e.key === ',') {
     e.preventDefault();
-    const inp = document.getElementById(inpId);
-    const v = inp.value.trim();
-    if(!v) return;
-    const wrap = document.getElementById(wrapId);
-    const pill = document.createElement('div');
+    var inp = document.getElementById(inpId);
+    var v = inp.value.trim();
+    if (!v) return;
+    var wrap = document.getElementById(wrapId);
+    var pill = document.createElement('div');
     pill.className = 'tag-pill';
     pill.innerHTML = v + ' <span class="rm" onclick="removeTag(this)">×</span>';
     wrap.insertBefore(pill, inp);
@@ -421,197 +332,192 @@ function addTag(e, wrapId, inpId) {
   }
 }
 function removeTag(el) { el.parentElement.remove(); }
-
-// ─── NAVIGATION ───────────────────────────────────────────
-function goStep(n) {
-  document.querySelectorAll('.panel').forEach((p,i) => p.classList.toggle('active', i===n));
-  document.querySelectorAll('.nav-item[id^="nav-"]').forEach((el,i) => {
-    el.classList.toggle('active', i===n);
-    if(i<n) el.classList.add('done'); else el.classList.remove('done');
-  });
-  window.scrollTo(0,0);
-  if(n===1) renderContactosList();
+function getTags(wrapId) {
+  return Array.from(document.getElementById(wrapId).querySelectorAll('.tag-pill'))
+    .map(function(p){ return p.textContent.replace('×','').trim(); });
 }
 
-// ─── OAUTH ────────────────────────────────────────────────
+// ── NAVIGATION ─────────────────────────────────────────────
+function goStep(n) {
+  document.querySelectorAll('.panel').forEach(function(p,i){ p.classList.toggle('active', i===n); });
+  document.querySelectorAll('.nav-item[id^="nav-"]').forEach(function(el,i){
+    el.classList.toggle('active', i===n);
+    if (i<n) el.classList.add('done'); else el.classList.remove('done');
+  });
+  if (n===1) renderContactosList();
+  window.scrollTo(0,0);
+}
+
+// ── OAUTH ──────────────────────────────────────────────────
 function conectarGoogle() {
-  if(typeof google === 'undefined') {
-    alert('El servicio de Google aún no ha cargado. Espera un momento y vuelve a intentarlo.');
-    return;
-  }
-  const btn = document.getElementById('btn-google');
+  if (typeof google === 'undefined') { alert('El servicio de Google aún no cargó. Espera un momento.'); return; }
+  var btn = document.getElementById('btn-google');
   btn.disabled = true; btn.textContent = 'Conectando...';
   google.accounts.oauth2.initTokenClient({
     client_id: GOOGLE_CLIENT_ID,
     scope: GOOGLE_SCOPES,
-    callback: async (resp) => {
-      if(resp.error) { btn.disabled=false; btn.innerHTML=gSvg()+' Conectar Google Contacts'; return; }
+    callback: function(resp) {
+      if (resp.error) { btn.disabled=false; btn.textContent='Conectar Google Contacts'; return; }
       googleToken = resp.access_token;
       btn.style.display = 'none';
       document.getElementById('user-badge').style.display = 'flex';
       document.getElementById('user-name').textContent = 'Google Contacts ✓';
-      await precargarGCEmails();
+      precargarGC();
     }
   }).requestAccessToken();
 }
 
-function gSvg() {
-  return `<svg width="15" height="15" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>`;
-}
-
-
-async function precargarGCEmails() {
-  gcEmails = [];
-  // Cargar emails existentes
+async function precargarGC() {
+  gcEmails = []; gcGruposMap = {};
   try {
-    let url = 'https://people.googleapis.com/v1/people/me/connections?personFields=emailAddresses,names&pageSize=1000';
-    while(url) {
-      const r = await fetch(url, { headers: { Authorization: 'Bearer '+googleToken }});
-      const d = await r.json();
-      (d.connections||[]).forEach(p => {
-        (p.emailAddresses||[]).forEach(e => { if(e.value) gcEmails.push(e.value.toLowerCase()); });
-        (p.names||[]).forEach(n => { if(n.displayName) gcEmails.push(n.displayName.toLowerCase()); });
+    var url = 'https://people.googleapis.com/v1/people/me/connections?personFields=emailAddresses,names&pageSize=1000';
+    while (url) {
+      var r = await fetch(url, { headers: { Authorization: 'Bearer '+googleToken }});
+      var d = await r.json();
+      (d.connections||[]).forEach(function(p){
+        (p.emailAddresses||[]).forEach(function(e){ if(e.value) gcEmails.push(e.value.toLowerCase()); });
+        (p.names||[]).forEach(function(n){ if(n.displayName) gcEmails.push(n.displayName.toLowerCase()); });
       });
       url = d.nextPageToken ? url.split('&pageToken')[0]+'&pageToken='+d.nextPageToken : null;
     }
-  } catch(e) { console.warn('Error GC emails:', e); }
-
-  // Cargar grupos/etiquetas existentes
+  } catch(e) { console.warn('Error cargando contactos:', e); }
   try {
-    const r = await fetch('https://people.googleapis.com/v1/contactGroups?pageSize=200', {
-      headers: { Authorization: 'Bearer '+googleToken }
+    var r2 = await fetch('https://people.googleapis.com/v1/contactGroups?pageSize=200', { headers: { Authorization: 'Bearer '+googleToken }});
+    var d2 = await r2.json();
+    (d2.contactGroups||[]).forEach(function(g){
+      if (g.groupType === 'USER_CONTACT_GROUP') gcGruposMap[g.name] = g.resourceName;
     });
-    const d = await r.json();
-    gcGruposMap = {};
-    (d.contactGroups||[]).forEach(g => {
-      if(g.groupType === 'USER_CONTACT_GROUP') {
-        gcGruposMap[g.name] = g.resourceName;
-      }
-    });
-    console.log('Grupos cargados:', Object.keys(gcGruposMap).length, gcGruposMap);
-  } catch(e) { console.warn('Error GC grupos:', e); }
+    console.log('Grupos cargados:', Object.keys(gcGruposMap).length);
+  } catch(e) { console.warn('Error cargando grupos:', e); }
 }
 
 async function crearGrupoSiNoExiste(nombre) {
-  if(gcGruposMap[nombre]) return gcGruposMap[nombre];
+  if (gcGruposMap[nombre]) return gcGruposMap[nombre];
   try {
-    const r = await fetch('https://people.googleapis.com/v1/contactGroups', {
+    var r = await fetch('https://people.googleapis.com/v1/contactGroups', {
       method: 'POST',
       headers: { Authorization: 'Bearer '+googleToken, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contactGroup: { name: nombre } })
+      body: JSON.stringify({ contactGroup: { name: nombre }})
     });
-    const d = await r.json();
-    if(d.resourceName) {
-      gcGruposMap[nombre] = d.resourceName;
-      console.log('Grupo creado:', nombre, d.resourceName);
-      return d.resourceName;
-    }
+    var d = await r.json();
+    if (d.resourceName) { gcGruposMap[nombre] = d.resourceName; return d.resourceName; }
   } catch(e) { console.warn('Error creando grupo:', nombre, e); }
   return null;
 }
 
-// ─── PROGRESS ─────────────────────────────────────────────
+// ── PROGRESS ───────────────────────────────────────────────
 function animateProgress(fillId, msgId, messages, onDone) {
-  let pct=0, mi=0;
+  var pct = 0, mi = 0;
   document.getElementById(msgId).textContent = messages[0];
-  const iv = setInterval(() => {
+  var iv = setInterval(function(){
     pct += Math.random()*12+6;
-    if(pct>95) pct=95;
+    if (pct>95) pct=95;
     document.getElementById(fillId).style.width = pct+'%';
     mi = Math.min(Math.floor(pct/(100/messages.length)), messages.length-1);
     document.getElementById(msgId).textContent = messages[mi];
-    if(pct>=95) { clearInterval(iv); document.getElementById(fillId).style.width='100%'; setTimeout(onDone,350); }
+    if (pct>=95) { clearInterval(iv); document.getElementById(fillId).style.width='100%'; setTimeout(onDone,350); }
   }, 600);
 }
 
-// ─── STEP 1: BUSCAR EMPRESAS (multi-query) ───────────────
-function getQueries() {
-  return [...document.getElementById('queries-wrap').querySelectorAll('.tag-pill')]
-    .map(p => p.textContent.replace('×','').trim()).filter(Boolean);
+// ── ETIQUETAS ──────────────────────────────────────────────
+function asignarEtiquetaSector(emp) {
+  var t = (emp.name+' '+(emp.types||[]).join(' ')).toLowerCase();
+  if (t.match(/aves?|pollo/)) return 'CLIENTES FINALES AVES';
+  if (t.match(/carnic|carne/)) return 'CLIENTES FINALES CARNICAS';
+  if (t.match(/helad/)) return 'CLIENTES FINALES HELADOS';
+  if (t.match(/pescad|marisco|fish/)) return 'CLIENTES FINALES PESCADO';
+  if (t.match(/fruta roja|berry|fresa/)) return 'CLIENTES FINALES FRUTA ROJA';
+  if (t.match(/fruta|vegetal|horto/)) return 'CLIENTES FINALES FRUTAS';
+  if (t.match(/lact|leche|queso/)) return 'CLIENTES FINALES LACTEOS';
+  if (t.match(/pan congelad|bolleri/)) return 'CLIENTES FINALES PAN CONGELADO';
+  if (t.match(/supermercad|retail/)) return 'CLIENTES FINALES SUPERMERCADOS';
+  if (t.match(/catering|colectivid/)) return 'CLIENTES FINALES CATERING';
+  if (t.match(/horeca|hostel|restaur/)) return 'CLIENTES FINALES HORECA';
+  if (t.match(/congelad/)) return 'CLIENTES FINALES CONGELADOS A DOMICILIO';
+  if (t.match(/plataforma|almacén|almacen|logist/)) return 'CLIENTES FINALES ALMACÉN / PLATAFORMA LOGISTICA';
+  if (t.match(/farma|medic/)) return 'CLIENTES FINALES FARMA';
+  if (t.match(/flor|flower/)) return 'CLIENTES FINALES FLORES';
+  if (t.match(/hielo/)) return 'CLIENTES FINALES HIELO';
+  if (t.match(/vending/)) return 'CLIENTES FINALES VENDING';
+  return 'CLIENTES FINALES PRODUCTORES ALIMENTOS';
 }
-function getCargosLinkedIn() {
-  return [...document.getElementById('cargos-linkedin-wrap').querySelectorAll('.tag-pill')]
-    .map(p => p.textContent.replace('×','').trim()).filter(Boolean);
+function asignarEtiquetaVehiculo(emp) {
+  var t = (emp.name+' '+(emp.types||[]).join(' ')).toLowerCase();
+  if (t.match(/trailer|tráiler|semi/)) return 'Clientes Finales TRAILER';
+  if (t.match(/camion|camión|truck/)) return 'Clientes Finales TRUCK';
+  return 'Clientes Finales LCV';
+}
+function generarNota(empName, empTypes, cargo, notasExtra) {
+  var sector = asignarEtiquetaSector({name:empName,types:empTypes}).replace('CLIENTES FINALES ','').toLowerCase();
+  var nota = 'Empresa de distribución y transporte frigorífico en España (sector '+sector+'). Opera con flota de vehículos refrigerados. Contacto: '+cargo+', con responsabilidad sobre decisiones de flota.';
+  if (notasExtra) nota += '\n\n'+notasExtra;
+  nota += '\n\nProspectado — Claude Cowork.';
+  return nota;
 }
 
+// ── BUSCAR EMPRESAS ────────────────────────────────────────
 async function fetchQuery(query, region, maxR) {
-  const resp = await fetch('https://places.googleapis.com/v1/places:searchText', {
+  var resp = await fetch('https://places.googleapis.com/v1/places:searchText', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Goog-Api-Key': GMAPS_KEY,
-      'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.rating,places.websiteUri,places.nationalPhoneNumber,places.types,places.id'
-    },
+    headers: { 'Content-Type':'application/json', 'X-Goog-Api-Key':GMAPS_KEY, 'X-Goog-FieldMask':'places.displayName,places.formattedAddress,places.rating,places.websiteUri,places.nationalPhoneNumber,places.types,places.id' },
     body: JSON.stringify({ textQuery: query+' '+region, languageCode:'es', regionCode:'ES', maxResultCount: maxR })
   });
-  const data = await resp.json();
+  var data = await resp.json();
   return data.places || [];
 }
 
 async function buscarEmpresas() {
-  const queries = getQueries();
-  const region  = document.getElementById('region').value || 'España';
-  const maxR    = parseInt(document.getElementById('max-emp').value)||10;
-
-  if(!queries.length) { alert('Añade al menos una búsqueda.'); return; }
+  var queries = getTags('queries-wrap');
+  var region  = document.getElementById('region').value || 'España';
+  var maxR    = parseInt(document.getElementById('max-emp').value) || 10;
+  if (!queries.length) { alert('Añade al menos una búsqueda.'); return; }
 
   document.getElementById('p1-progress').style.display = 'block';
   document.getElementById('p1-result').style.display   = 'none';
   document.getElementById('p1-alert').innerHTML        = '';
 
-  const msgs = queries.map((q,i) => `Buscando: "${q}"...`);
-  msgs.push('Eliminando duplicados...','Procesando resultados...');
-
-  let pct = 0;
-  const fillEl = document.getElementById('p1-fill');
-  const msgEl  = document.getElementById('p1-msg');
-  const step   = 90 / queries.length;
-
-  msgEl.textContent = msgs[0];
+  var fillEl = document.getElementById('p1-fill');
+  var msgEl  = document.getElementById('p1-msg');
+  var step   = 90 / queries.length;
+  var pct    = 0;
   fillEl.style.width = '0%';
 
   try {
-    const seen = new Set();
-    const allPlaces = [];
-
-    for(let i=0; i<queries.length; i++) {
-      msgEl.textContent = `Búsqueda ${i+1}/${queries.length}: "${queries[i]}"...`;
-      pct += step;
-      fillEl.style.width = pct+'%';
-      const places = await fetchQuery(queries[i], region, maxR);
-      for(const p of places) {
-        const key = (p.displayName?.text||'').toLowerCase().trim();
-        if(!seen.has(key)) { seen.add(key); allPlaces.push(p); }
-      }
-      await new Promise(r => setTimeout(r, 300)); // evitar rate limit
+    var seen = {};
+    var allPlaces = [];
+    for (var i=0; i<queries.length; i++) {
+      msgEl.textContent = 'Búsqueda '+(i+1)+'/'+queries.length+': "'+queries[i]+'"...';
+      pct += step; fillEl.style.width = pct+'%';
+      var places = await fetchQuery(queries[i], region, maxR);
+      places.forEach(function(p){
+        var key = (p.displayName && p.displayName.text ? p.displayName.text : '').toLowerCase().trim();
+        if (key && !seen[key]) { seen[key]=true; allPlaces.push(p); }
+      });
+      await new Promise(function(r){ setTimeout(r, 300); });
     }
-
-    msgEl.textContent = 'Procesando resultados...';
     fillEl.style.width = '100%';
-
-    if(allPlaces.length > 0) {
-      empresas = allPlaces.map((p,i) => ({
-        id: i+1,
-        name: p.displayName?.text||'Sin nombre',
-        address: p.formattedAddress||'',
-        rating: p.rating||0,
-        website: (p.websiteUri||'').replace(/https?:\/\//,'').split('/')[0],
-        phone: p.nationalPhoneNumber||'',
-        types: p.types||[]
-      }));
+    msgEl.textContent = 'Procesando '+allPlaces.length+' resultados...';
+    if (allPlaces.length > 0) {
+      empresas = allPlaces.map(function(p,i){
+        return {
+          id: i+1,
+          name: p.displayName && p.displayName.text ? p.displayName.text : 'Sin nombre',
+          address: p.formattedAddress || '',
+          rating: p.rating || 0,
+          website: (p.websiteUri||'').replace(/https?:\/\//,'').split('/')[0],
+          phone: p.nationalPhoneNumber || '',
+          types: p.types || []
+        };
+      });
     } else {
       empresas = getDemoEmpresas();
       document.getElementById('p1-alert').innerHTML = '<div class="alert alert-warn">Sin resultados de Google Maps API. Verifica tu clave y que "Places API (New)" está habilitada. Mostrando ejemplos.</div>';
     }
   } catch(err) {
     empresas = getDemoEmpresas();
-    document.getElementById('p1-alert').innerHTML = `<div class="alert alert-warn">Error: ${err.message}. Mostrando ejemplos.</div>`;
+    document.getElementById('p1-alert').innerHTML = '<div class="alert alert-warn">Error: '+err.message+'. Mostrando ejemplos.</div>';
   }
-
-  setTimeout(() => {
-    document.getElementById('p1-progress').style.display = 'none';
-    renderEmpresas();
-  }, 400);
+  setTimeout(function(){ document.getElementById('p1-progress').style.display='none'; renderEmpresas(); }, 400);
 }
 
 function getDemoEmpresas() {
@@ -620,496 +526,352 @@ function getDemoEmpresas() {
     {id:2,name:'Transportes Frigoríficos Iberia',address:'Guadalajara',rating:3.8,website:'tfiberia.com',phone:'949 23 45 67',types:['moving_company']},
     {id:3,name:'Grupo Cefusa Logística',address:'Paterna, Valencia',rating:4.5,website:'cefusa.es',phone:'96 134 56 78',types:['food_store']},
     {id:4,name:'Frío Andino Distribución',address:'Alcalá de Henares, Madrid',rating:4.0,website:'frioandino.com',phone:'91 888 23 45',types:['distribution']},
-    {id:5,name:'Logística Frescos del Sur',address:'Jerez, Cádiz',rating:3.9,website:'frescossur.com',phone:'956 78 90 12',types:['logistics']},
+    {id:5,name:'Logística Frescos del Sur',address:'Jerez, Cádiz',rating:3.9,website:'frescossur.com',phone:'956 78 90 12',types:['logistics']}
   ];
 }
 
+// ── RENDER EMPRESAS ────────────────────────────────────────
 function renderEmpresas() {
-  const mostrar = document.getElementById('mostrar-procesadas') && document.getElementById('mostrar-procesadas').checked;
-  const filtradas = mostrar ? empresas : empresas.filter(e => {
-    const est = getEstadoEmpresa(e.name);
+  var mostrar = document.getElementById('mostrar-procesadas') && document.getElementById('mostrar-procesadas').checked;
+  var filtradas = mostrar ? empresas : empresas.filter(function(e){
+    var est = getEstadoEmpresa(e.name);
     return !est || est.estado === 'pendiente';
   });
 
-  const hist = contarHistorial();
-  const histBar = document.getElementById('historial-bar');
-  if(histBar) {
+  var hist = contarHistorial();
+  var histBar = document.getElementById('historial-bar');
+  if (histBar) {
     histBar.style.display = hist.total > 0 ? 'block' : 'none';
     document.getElementById('hist-procesadas').textContent = hist.procesadas > 0 ? '✓ '+hist.procesadas+' procesadas' : '';
     document.getElementById('hist-descartadas').textContent = hist.descartadas > 0 ? '✕ '+hist.descartadas+' descartadas' : '';
     document.getElementById('hist-pendientes').textContent = hist.pendientes > 0 ? '⏳ '+hist.pendientes+' pendientes' : '';
   }
+  var ocultas = empresas.length - filtradas.length;
+  document.getElementById('emp-count').textContent = filtradas.length+' empresas'+(ocultas>0?' ('+ocultas+' ocultas)':'');
 
-  const ocultas = empresas.length - filtradas.length;
-  document.getElementById('emp-count').textContent = filtradas.length + ' empresas encontradas' + (ocultas > 0 ? ' (' + ocultas + ' ocultas por historial)' : '');
+  var html = '';
+  filtradas.forEach(function(e){
+    var est = getEstadoEmpresa(e.name);
+    var estColor = !est ? '' : est.estado==='procesada' ? 'var(--green)' : est.estado==='descartada' ? 'var(--red)' : 'var(--amber)';
+    var estLabel = !est ? '' : est.estado==='procesada' ? '✓ Procesada' : est.estado==='descartada' ? '✕ Descartada' : '⏳ Pendiente';
+    var nameEsc = e.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    var opacity = (est && est.estado!=='pendiente') ? 'opacity:0.75;' : '';
 
-  document.getElementById('emp-list').innerHTML = filtradas.map(e => {
-    const est = getEstadoEmpresa(e.name);
-    const estColor = !est ? '' : est.estado==='procesada' ? 'var(--green)' : est.estado==='descartada' ? 'var(--red)' : 'var(--amber)';
-    const estLabel = !est ? '' : est.estado==='procesada' ? '✓ Procesada' : est.estado==='descartada' ? '✕ Descartada' : '⏳ Pendiente';
-    const nameEsc = e.name.replace(/'/g, "\'");
-    return '<div class="emp-card" id="emp-card-'+e.id+'" style="'+(est && est.estado!=='pendiente' ? 'opacity:0.75;' : '')+'">'
-      +'<div class="emp-card-header" onclick="toggleForm('+e.id+')">'
-      +'<div style="flex:1;">'
-      +'<div class="emp-name" style="display:flex;align-items:center;gap:8px;">'+e.name
-      +(estLabel ? '<span style="font-size:10px;font-weight:500;color:'+estColor+';">'+estLabel+' '+est.fecha+'</span>' : '')
-      +'</div>'
-      +'<div class="emp-addr">'+e.address+'</div>'
-      +'<div class="emp-meta">'
-      +(e.rating ? '<span class="badge badge-amber">★ '+e.rating+'</span>' : '')
-      +(e.phone  ? '<span class="badge badge-gray">'+e.phone+'</span>' : '')
-      +(e.website ? '<span class="badge badge-blue"><a href="https://'+e.website+'" target="_blank" style="color:inherit;text-decoration:none;">'+e.website+'</a></span>' : '')
-      +'</div></div>'
-      +'<span style="font-size:11px;color:var(--text3);margin-top:2px;" id="emp-toggle-'+e.id+'">+ Añadir contacto</span>'
-      +'</div>'
-      +'<div class="emp-actions">'
-      +'<button class="btn btn-linkedin btn-sm" onclick="abrirLinkedIn(''+nameEsc+'')">👤 Personas LinkedIn</button>'
-      +'<button class="btn btn-secondary btn-sm" onclick="abrirLinkedInEmpresas(''+nameEsc+'')">🏢 Empresa LinkedIn</button>'
-      +'<button class="btn btn-secondary btn-sm" onclick="abrirEmpresiaEs(''+nameEsc+'')" style="border-color:#e85d04;color:#e85d04;">👔 Empresia.es</button>'
-      +(e.website ? '<button class="btn btn-secondary btn-sm" onclick="window.open('https://'+e.website+'','_blank')">Web →</button>' : '')
-      +'<button class="btn btn-primary btn-sm" onclick="toggleForm('+e.id+')">+ Añadir contacto</button>'
-      +'<div style="margin-left:auto;display:flex;gap:5px;align-items:center;">'
-      +'<button class="btn btn-sm" onclick="marcarEmpresa(''+nameEsc+'','procesada')" style="border-color:var(--green-border);color:var(--green);background:var(--green-bg);" title="Procesada">✓</button>'
-      +'<button class="btn btn-sm" onclick="marcarEmpresa(''+nameEsc+'','pendiente')" style="border-color:var(--amber-border);color:var(--amber);background:var(--amber-bg);" title="Pendiente">⏳</button>'
-      +'<button class="btn btn-sm" onclick="marcarEmpresa(''+nameEsc+'','descartada')" style="border-color:var(--red-border);color:var(--red);background:var(--red-bg);" title="Descartar">✕</button>'
-      +'</div></div>'
-      +'<div class="contact-form" id="form-'+e.id+'">'+renderContactForm(e)+'</div>'
-      +'</div>';
-  }).join('');
-
-  document.getElementById('p1-progress').style.display = 'none';
-  document.getElementById('p1-result').style.display   = 'block';
+    html += '<div class="emp-card" id="emp-card-'+e.id+'" style="'+opacity+'">';
+    html += '<div class="emp-card-header" onclick="toggleForm('+e.id+')">';
+    html += '<div style="flex:1;">';
+    html += '<div style="font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;">'+escHtml(e.name);
+    if (estLabel) html += '<span style="font-size:10px;font-weight:500;color:'+estColor+';">'+estLabel+' '+est.fecha+'</span>';
+    html += '</div>';
+    html += '<div style="font-size:11px;color:var(--text2);margin-top:2px;">'+escHtml(e.address)+'</div>';
+    html += '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;">';
+    if (e.rating) html += '<span class="badge badge-amber">★ '+e.rating+'</span>';
+    if (e.phone)  html += '<span class="badge badge-gray">'+escHtml(e.phone)+'</span>';
+    if (e.website) html += '<span class="badge badge-blue"><a href="https://'+e.website+'" target="_blank" style="color:inherit;text-decoration:none;">'+e.website+'</a></span>';
+    html += '</div></div>';
+    html += '<span style="font-size:11px;color:var(--text3);margin-top:2px;" id="emp-toggle-'+e.id+'">+ Añadir contacto</span>';
+    html += '</div>';
+    html += '<div class="emp-actions">';
+    html += '<button class="btn btn-linkedin btn-sm" onclick="abrirLinkedIn(\''+nameEsc+'\')">👤 Personas LinkedIn</button>';
+    html += '<button class="btn btn-secondary btn-sm" onclick="abrirLinkedInEmpresas(\''+nameEsc+'\')">🏢 Empresa LinkedIn</button>';
+    html += '<button class="btn btn-secondary btn-sm" onclick="abrirEmpresiaEs(\''+nameEsc+'\')" style="border-color:#e85d04;color:#e85d04;">👔 Empresia.es</button>';
+    if (e.website) html += '<button class="btn btn-secondary btn-sm" onclick="window.open(\'https://'+e.website+'\',\'_blank\')">Web →</button>';
+    html += '<button class="btn btn-primary btn-sm" onclick="toggleForm('+e.id+')">+ Añadir contacto</button>';
+    html += '<div style="margin-left:auto;display:flex;gap:5px;align-items:center;" id="emp-added-'+e.id+'">';
+    html += '<button class="btn btn-sm" onclick="marcarEmpresa(\''+nameEsc+'\',\'procesada\')" style="border-color:var(--green-border);color:var(--green);background:var(--green-bg);" title="Procesada">✓</button>';
+    html += '<button class="btn btn-sm" onclick="marcarEmpresa(\''+nameEsc+'\',\'pendiente\')" style="border-color:var(--amber-border);color:var(--amber);background:var(--amber-bg);" title="Pendiente">⏳</button>';
+    html += '<button class="btn btn-sm" onclick="marcarEmpresa(\''+nameEsc+'\',\'descartada\')" style="border-color:var(--red-border);color:var(--red);background:var(--red-bg);" title="Descartar">✕</button>';
+    html += '</div></div>';
+    html += '<div class="contact-form" id="form-'+e.id+'">'+renderContactForm(e)+'</div>';
+    html += '</div>';
+  });
+  document.getElementById('emp-list').innerHTML = html;
+  document.getElementById('p1-result').style.display = 'block';
 }
 
-function marcarEmpresa(nombre, estado) {
-  setEstadoEmpresa(nombre, estado);
-  renderEmpresas();
-}
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+// ── LINKEDIN / EMPRESIA ────────────────────────────────────
 function abrirLinkedIn(empresa) {
-  // Busca personas de esa empresa directamente
-  const q = encodeURIComponent(empresa);
-  window.open('https://www.linkedin.com/search/results/people/?company='+q+'&origin=FACETED_SEARCH', '_blank');
+  window.open('https://www.linkedin.com/search/results/people/?company='+encodeURIComponent(empresa)+'&origin=FACETED_SEARCH','_blank');
 }
-
 function abrirLinkedInEmpresas(empresa) {
-  const q = encodeURIComponent(empresa);
-  window.open(`https://www.linkedin.com/search/results/companies/?keywords=${q}`, '_blank');
+  window.open('https://www.linkedin.com/search/results/companies/?keywords='+encodeURIComponent(empresa),'_blank');
 }
-
 function abrirEmpresiaEs(empresa) {
-  // Limpia el nombre: quita SL, SA, SLU, etc. para mejor búsqueda
-  const nombre = empresa.replace(/(s\.?l\.?u?|s\.?a\.?|s\.?l|slp|s\.?a\.?u|sociedad|group|grupo)/gi,'').trim();
-  const q = encodeURIComponent(nombre);
-  window.open(`https://empresia.es/empresa/${q}`, '_blank');
+  var nombre = empresa.replace(/\b(s\.?l\.?u?|s\.?a\.?|s\.?l|slp|sociedad|group|grupo)\b/gi,'').trim();
+  window.open('https://empresia.es/empresa/'+encodeURIComponent(nombre),'_blank');
 }
 
+// ── FORMULARIO CONTACTO ────────────────────────────────────
 function toggleForm(empId) {
-  const form = document.getElementById('form-'+empId);
+  var form = document.getElementById('form-'+empId);
   form.classList.toggle('open');
-  const tog = document.getElementById('emp-toggle-'+empId);
-  tog.textContent = form.classList.contains('open') ? '▲ Cerrar' : '+ Añadir contacto';
-}
-
-function getSectoresSeleccionados(empId) {
-  return [...document.querySelectorAll('#fn-sector-'+empId+' option:checked')].map(o=>o.value);
-}
-function getFlotasSeleccionadas(empId) {
-  return [...document.querySelectorAll('#fn-vehiculo-'+empId+' option:checked')].map(o=>o.value);
+  var tog = document.getElementById('emp-toggle-'+empId);
+  if (tog) tog.textContent = form.classList.contains('open') ? '▲ Cerrar' : '+ Añadir contacto';
 }
 
 function renderContactForm(emp) {
-  const etiqSector   = asignarEtiquetaSector(emp);
-  const etiqVehiculo = asignarEtiquetaVehiculo(emp);
-  const webEmp = emp.website ? 'https://'+emp.website : '';
+  var etiqSector   = asignarEtiquetaSector(emp);
+  var etiqVehiculo = asignarEtiquetaVehiculo(emp);
+  var webEmp = emp.website ? 'https://'+emp.website : '';
+  var nameEsc = escHtml(emp.name);
+  var webEsc  = escHtml(webEmp);
 
-  const SOLO_SECTOR = [
-    'CLIENTES FINALES AVES','CLIENTES FINALES CARNICAS',
-    'CLIENTES FINALES ALMACÉN / PLATAFORMA LOGISTICA','CLIENTES FINALES CATERING',
-    'CLIENTES FINALES CONGELADOS A DOMICILIO','CLIENTES FINALES FARMA',
-    'CLIENTES FINALES FLORES','CLIENTES FINALES FRUTA ROJA','CLIENTES FINALES FRUTAS',
-    'CLIENTES FINALES HELADOS','CLIENTES FINALES HIELO','CLIENTES FINALES HORECA',
-    'CLIENTES FINALES LACTEOS','CLIENTES FINALES PAN CONGELADO','CLIENTES FINALES PESCADO',
-    'CLIENTES FINALES PRODUCTORES ALIMENTOS','CLIENTES FINALES SUPERMERCADOS','CLIENTES FINALES VENDING'
-  ];
-  const SOLO_FLOTA = ['Clientes Finales LCV','Clientes Finales TRUCK','Clientes Finales TRAILER'];
+  var sectorOptions = ETIQUETAS_SECTOR.map(function(e){
+    return '<option value="'+escHtml(e)+'"'+(e===etiqSector?' selected':'')+'>'+escHtml(e)+'</option>';
+  }).join('');
+  var flotaOptions = ETIQUETAS_FLOTA.map(function(f){
+    return '<option value="'+escHtml(f)+'"'+(f===etiqVehiculo?' selected':'')+'>'+escHtml(f)+'</option>';
+  }).join('');
 
-  return `
-  <div class="form-section-title">Nuevo contacto</div>
-  <div class="form-row">
-    <div class="form-group">
-      <label>Nombre *</label>
-      <input type="text" id="fn-nombre-${emp.id}" placeholder="Ej: Carlos" />
-    </div>
-    <div class="form-group">
-      <label>Primer apellido *</label>
-      <input type="text" id="fn-ap1-${emp.id}" placeholder="Ej: Mendoza" />
-    </div>
-    <div class="form-group">
-      <label>Segundo apellido</label>
-      <input type="text" id="fn-ap2-${emp.id}" placeholder="Ej: García" />
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label>Cargo *</label>
-      <input type="text" id="fn-cargo-${emp.id}" placeholder="Ej: Director de Flota" list="cargos-list-${emp.id}" />
-      <datalist id="cargos-list-${emp.id}">
-        <option>Administrador Único</option>
-        <option>Gerente</option>
-        <option>Gerente General</option>
-        <option>Director General</option>
-        <option>Director de Flota</option>
-        <option>Director de Compras</option>
-        <option>Director de Mantenimiento</option>
-        <option>Director de Calidad</option>
-        <option>Director de Logística</option>
-        <option>Director de Operaciones</option>
-      </datalist>
-    </div>
-    <div class="form-group">
-      <label>Empresa (editable)</label>
-      <input type="text" id="fn-empresa-${emp.id}" value="${emp.name}" placeholder="Nombre de la empresa" />
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" id="fn-email-${emp.id}" placeholder="nombre@empresa.com" />
-    </div>
-    <div class="form-group">
-      <label>Teléfono móvil</label>
-      <input type="tel" id="fn-tel-${emp.id}" placeholder="+34 6XX XXX XXX" />
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label>Teléfono fijo empresa</label>
-      <input type="tel" id="fn-fijo-${emp.id}" placeholder="+34 9XX XXX XXX" />
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label>Web de la empresa</label>
-      <input type="url" id="fn-web-${emp.id}" value="${webEmp}" placeholder="https://empresa.com" />
-    </div>
-    <div class="form-group">
-      <label>LinkedIn del contacto</label>
-      <input type="url" id="fn-linkedin-${emp.id}" placeholder="https://linkedin.com/in/..." />
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label>Etiquetas de sector (Ctrl+clic para varias)</label>
-      <select id="fn-sector-${emp.id}" multiple size="6" style="height:auto;padding:4px;">
-        ${SOLO_SECTOR.map(e => '<option value="'+e+'" '+(e===etiqSector?'selected':'')+'>'+e+'</option>').join('')}
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Tipo de flota (Ctrl+clic para varias)</label>
-      <select id="fn-vehiculo-${emp.id}" multiple size="3" style="height:auto;padding:4px;">
-        ${SOLO_FLOTA.map(f => '<option value="'+f+'" '+(f===etiqVehiculo?'selected':'')+'>'+f+'</option>').join('')}
-      </select>
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label>Notas adicionales (opcional)</label>
-      <textarea id="fn-notas-${emp.id}" rows="2" placeholder="Información adicional..."></textarea>
-    </div>
-  </div>
-  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;">
-    <button class="btn btn-secondary btn-sm" onclick="toggleForm(${emp.id})">Cancelar</button>
-    <button class="btn btn-primary btn-sm" onclick="guardarContacto(${emp.id})">Guardar contacto</button>
-  </div>`;
+  return '<div class="form-section-title">Nuevo contacto</div>'
+    +'<div class="form-row">'
+    +'<div class="form-group"><label>Nombre *</label><input type="text" id="fn-nombre-'+emp.id+'" placeholder="Carlos" /></div>'
+    +'<div class="form-group"><label>Primer apellido *</label><input type="text" id="fn-ap1-'+emp.id+'" placeholder="Mendoza" /></div>'
+    +'<div class="form-group"><label>Segundo apellido</label><input type="text" id="fn-ap2-'+emp.id+'" placeholder="García" /></div>'
+    +'</div>'
+    +'<div class="form-row">'
+    +'<div class="form-group"><label>Cargo *</label>'
+    +'<input type="text" id="fn-cargo-'+emp.id+'" placeholder="Director de Flota" list="cl-'+emp.id+'" />'
+    +'<datalist id="cl-'+emp.id+'"><option>Administrador Único</option><option>Gerente</option><option>Gerente General</option><option>Director General</option><option>Director de Flota</option><option>Director de Compras</option><option>Director de Mantenimiento</option><option>Director de Calidad</option><option>Director de Logística</option><option>Director de Operaciones</option></datalist>'
+    +'</div>'
+    +'<div class="form-group"><label>Empresa (editable)</label><input type="text" id="fn-empresa-'+emp.id+'" value="'+nameEsc+'" /></div>'
+    +'</div>'
+    +'<div class="form-row">'
+    +'<div class="form-group"><label>Email</label><input type="email" id="fn-email-'+emp.id+'" placeholder="nombre@empresa.com" /></div>'
+    +'<div class="form-group"><label>Teléfono móvil</label><input type="tel" id="fn-tel-'+emp.id+'" placeholder="+34 6XX XXX XXX" /></div>'
+    +'<div class="form-group"><label>Teléfono fijo</label><input type="tel" id="fn-fijo-'+emp.id+'" placeholder="+34 9XX XXX XXX" /></div>'
+    +'</div>'
+    +'<div class="form-row">'
+    +'<div class="form-group"><label>Web empresa</label><input type="url" id="fn-web-'+emp.id+'" value="'+webEsc+'" placeholder="https://empresa.com" /></div>'
+    +'<div class="form-group"><label>LinkedIn contacto</label><input type="url" id="fn-linkedin-'+emp.id+'" placeholder="https://linkedin.com/in/..." /></div>'
+    +'</div>'
+    +'<div class="form-row">'
+    +'<div class="form-group"><label>Etiquetas de sector (Ctrl+clic para varias)</label>'
+    +'<select id="fn-sector-'+emp.id+'" multiple size="6" style="height:auto;padding:4px;">'+sectorOptions+'</select></div>'
+    +'<div class="form-group"><label>Tipo de flota (Ctrl+clic para varias)</label>'
+    +'<select id="fn-vehiculo-'+emp.id+'" multiple size="3" style="height:auto;padding:4px;">'+flotaOptions+'</select></div>'
+    +'</div>'
+    +'<div class="form-row">'
+    +'<div class="form-group"><label>Notas adicionales</label><textarea id="fn-notas-'+emp.id+'" rows="2" placeholder="Información adicional..."></textarea></div>'
+    +'</div>'
+    +'<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;">'
+    +'<button class="btn btn-secondary btn-sm" onclick="toggleForm('+emp.id+')">Cancelar</button>'
+    +'<button class="btn btn-primary btn-sm" onclick="guardarContacto('+emp.id+')">Guardar contacto</button>'
+    +'</div>';
 }
 
-// ─── ETIQUETAS ────────────────────────────────────────────
-function asignarEtiquetaSector(emp) {
-  const t = (emp.name+' '+(emp.types||[]).join(' ')).toLowerCase();
-  if(t.match(/aves?|pollo/)) return 'CLIENTES FINALES AVES';
-  if(t.match(/carnic|carne/)) return 'CLIENTES FINALES CARNICAS';
-  if(t.match(/helad/)) return 'CLIENTES FINALES HELADOS';
-  if(t.match(/pescad|marisco|fish/)) return 'CLIENTES FINALES PESCADO';
-  if(t.match(/fruta roja|berry|fresa/)) return 'CLIENTES FINALES FRUTA ROJA';
-  if(t.match(/fruta|vegetal|horto/)) return 'CLIENTES FINALES FRUTAS';
-  if(t.match(/lact|leche|queso/)) return 'CLIENTES FINALES LACTEOS';
-  if(t.match(/pan congelad|bolleri/)) return 'CLIENTES FINALES PAN CONGELADO';
-  if(t.match(/supermercad|retail/)) return 'CLIENTES FINALES SUPERMERCADOS';
-  if(t.match(/catering|colectivid/)) return 'CLIENTES FINALES CATERING';
-  if(t.match(/horeca|hostel|restaur/)) return 'CLIENTES FINALES HORECA';
-  if(t.match(/congelad/)) return 'CLIENTES FINALES CONGELADOS A DOMICILIO';
-  if(t.match(/plataforma|almacén|almacen|logist/)) return 'CLIENTES FINALES ALMACÉN / PLATAFORMA LOGISTICA';
-  if(t.match(/farma|medic/)) return 'CLIENTES FINALES FARMA';
-  if(t.match(/flor|flower/)) return 'CLIENTES FINALES FLORES';
-  if(t.match(/hielo/)) return 'CLIENTES FINALES HIELO';
-  if(t.match(/vending/)) return 'CLIENTES FINALES VENDING';
-  return 'CLIENTES FINALES PRODUCTORES ALIMENTOS';
+function getSectoresSeleccionados(empId) {
+  return Array.from(document.querySelectorAll('#fn-sector-'+empId+' option:checked')).map(function(o){ return o.value; });
+}
+function getFlotasSeleccionadas(empId) {
+  return Array.from(document.querySelectorAll('#fn-vehiculo-'+empId+' option:checked')).map(function(o){ return o.value; });
 }
 
-function asignarEtiquetaVehiculo(emp) {
-  const t = (emp.name+' '+(emp.types||[]).join(' ')).toLowerCase();
-  if(t.match(/trailer|tráiler|semi/)) return 'Clientes Finales TRAILER';
-  if(t.match(/camion|camión|truck/)) return 'Clientes Finales TRUCK';
-  return 'Clientes Finales LCV';
-}
-
-function generarNota(emp, cargo, notasExtra) {
-  const sector = asignarEtiquetaSector(emp).replace('CLIENTES FINALES ','').toLowerCase();
-  let nota = `Empresa de distribución y transporte frigorífico en España (sector ${sector}). Opera con flota de vehículos refrigerados para transporte de productos perecederos. Contacto: ${cargo}, con responsabilidad sobre decisiones de flota.`;
-  if(notasExtra) nota += '\n\n'+notasExtra;
-  nota += '\n\nProspectado mediante búsqueda activa — Claude Cowork.';
-  return nota;
-}
-
-// ─── GUARDAR CONTACTO ────────────────────────────────────
+// ── GUARDAR CONTACTO ───────────────────────────────────────
 function guardarContacto(empId) {
-  const nombre   = document.getElementById('fn-nombre-'+empId).value.trim();
-  const ap1      = document.getElementById('fn-ap1-'+empId).value.trim();
-  const ap2      = document.getElementById('fn-ap2-'+empId).value.trim();
-  const cargo    = document.getElementById('fn-cargo-'+empId).value.trim();
-  const empresa  = document.getElementById('fn-empresa-'+empId).value.trim();
-  const email    = document.getElementById('fn-email-'+empId).value.trim();
-  const tel      = document.getElementById('fn-tel-'+empId).value.trim();
-  const fijo     = document.getElementById('fn-fijo-'+empId).value.trim();
-  const webEmp   = document.getElementById('fn-web-'+empId).value.trim();
-  const linkedin = document.getElementById('fn-linkedin-'+empId).value.trim();
-  const sectores = getSectoresSeleccionados(empId);
-  const flotas   = getFlotasSeleccionadas(empId);
-  const notasEx  = document.getElementById('fn-notas-'+empId).value.trim();
+  var nombre   = document.getElementById('fn-nombre-'+empId).value.trim();
+  var ap1      = document.getElementById('fn-ap1-'+empId).value.trim();
+  var ap2      = document.getElementById('fn-ap2-'+empId).value.trim();
+  var cargo    = document.getElementById('fn-cargo-'+empId).value.trim();
+  var empresa  = document.getElementById('fn-empresa-'+empId).value.trim();
+  var email    = document.getElementById('fn-email-'+empId).value.trim();
+  var tel      = document.getElementById('fn-tel-'+empId).value.trim();
+  var fijo     = document.getElementById('fn-fijo-'+empId).value.trim();
+  var webEmp   = document.getElementById('fn-web-'+empId).value.trim();
+  var linkedin = document.getElementById('fn-linkedin-'+empId).value.trim();
+  var sectores = getSectoresSeleccionados(empId);
+  var flotas   = getFlotasSeleccionadas(empId);
+  var notasEx  = document.getElementById('fn-notas-'+empId).value.trim();
 
-  if(!nombre || !ap1 || !cargo) { alert('El nombre, primer apellido y cargo son obligatorios.'); return; }
+  if (!nombre || !ap1 || !cargo) { alert('Nombre, primer apellido y cargo son obligatorios.'); return; }
 
-  const nombreCompleto = [nombre, ap1, ap2].filter(Boolean).join(' ');
-  const emp = empresas.find(e => e.id===empId);
-  const nota = generarNota({name: empresa, types: emp.types}, cargo, notasEx);
+  var emp = empresas.find(function(e){ return e.id===empId; });
+  var nombreCompleto = [nombre, ap1, ap2].filter(Boolean).join(' ');
+  var nota = generarNota(empresa, emp ? emp.types : [], cargo, notasEx);
 
   contactos.push({
     id: Date.now(),
-    empresa, domain: emp.website,
-    nombre, ap1, ap2, nombreCompleto,
-    cargo, email, tel, fijo,
-    webEmpresa: webEmp,
-    linkedin,
-    etiquetas: [...sectores, ...flotas, ETIQUETA_CLAUDE].filter(Boolean),
-    notas: nota,
-    added: false, exists: false
+    empresa: empresa, domain: emp ? emp.website : '',
+    nombre: nombre, ap1: ap1, ap2: ap2, nombreCompleto: nombreCompleto,
+    cargo: cargo, email: email, tel: tel, fijo: fijo,
+    webEmpresa: webEmp, linkedin: linkedin,
+    etiquetas: sectores.concat(flotas).concat([ETIQUETA_CLAUDE]),
+    notas: nota, added: false, exists: false
   });
 
+  setEstadoEmpresa(emp ? emp.name : empresa, 'procesada');
   toggleForm(empId);
-  setEstadoEmpresa(emp.name, 'procesada');
   renderContactosList();
   alert('✓ Contacto "'+nombreCompleto+'" guardado.');
 }
 
-// ─── RENDER CONTACTOS ─────────────────────────────────────
+// ── RENDER CONTACTOS ───────────────────────────────────────
 function renderContactosList() {
-  const empty = document.getElementById('p2-empty');
-  const list  = document.getElementById('p2-list');
-  if(contactos.length===0) { empty.style.display='block'; list.style.display='none'; return; }
-  empty.style.display = 'none';
-  list.style.display  = 'block';
+  var empty = document.getElementById('p2-empty');
+  var list  = document.getElementById('p2-list');
+  if (contactos.length === 0) { empty.style.display='block'; list.style.display='none'; return; }
+  empty.style.display = 'none'; list.style.display = 'block';
   document.getElementById('p2-count').textContent = contactos.length+' contacto'+(contactos.length>1?'s':'');
-  document.getElementById('contactos-list').innerHTML = contactos.map((c,i) => `
-    <div class="contact-card">
-      <div class="contact-company">${c.empresa}</div>
-      <div class="contact-body">
-        <div class="avatar">${(c.nombre||'?')[0]}${(c.ap1||'')[0]||''}</div>
-        <div class="contact-info">
-          <div class="contact-name">${c.nombreCompleto||c.nombre}</div>
-          <div class="contact-role">${c.cargo}</div>
-          ${c.email ? `<div class="contact-email">${c.email}</div>` : ''}
-          ${c.tel  ? `<div class="contact-tel">📱 ${c.tel}</div>`  : ''}
-          ${c.fijo ? `<div class="contact-tel">📞 ${c.fijo}</div>` : ''}
-          ${c.webEmpresa ? `<div style="margin-top:4px;"><a href="${c.webEmpresa}" target="_blank" class="badge badge-blue">🌐 Web empresa</a></div>` : ''}
-          ${c.webEmpresa ? `<div style="margin-top:4px;"><a href="${c.webEmpresa}" target="_blank" class="badge badge-blue">🌐 Web empresa</a></div>` : ''}
-          ${c.linkedin ? `<div style="margin-top:4px;"><a href="${c.linkedin}" target="_blank" class="badge badge-linkedin">LinkedIn →</a></div>` : ''}
-          <div class="tags-row">${c.etiquetas.map(t=>`<span class="badge badge-accent">${t}</span>`).join('')}</div>
-          <div class="notes-box"><div class="notes-label">Notas</div>${c.notas}</div>
-        </div>
-        <button class="btn btn-secondary btn-sm" onclick="eliminarContacto(${i})" style="flex-shrink:0;">✕</button>
-      </div>
-    </div>`).join('');
+  var html = '';
+  contactos.forEach(function(c, i){
+    var initials = (c.nombre||'?')[0] + (c.ap1||'')[0];
+    html += '<div class="contact-card">';
+    html += '<div class="contact-company">'+escHtml(c.empresa)+'</div>';
+    html += '<div class="contact-body">';
+    html += '<div class="avatar">'+escHtml(initials)+'</div>';
+    html += '<div class="contact-info">';
+    html += '<div class="contact-name">'+escHtml(c.nombreCompleto)+'</div>';
+    html += '<div class="contact-role">'+escHtml(c.cargo)+'</div>';
+    if (c.email)      html += '<div class="contact-email">'+escHtml(c.email)+'</div>';
+    if (c.tel)        html += '<div class="contact-tel">📱 '+escHtml(c.tel)+'</div>';
+    if (c.fijo)       html += '<div class="contact-tel">📞 '+escHtml(c.fijo)+'</div>';
+    if (c.webEmpresa) html += '<div style="margin-top:4px;"><a href="'+escHtml(c.webEmpresa)+'" target="_blank" class="badge badge-blue">🌐 Web empresa</a></div>';
+    if (c.linkedin)   html += '<div style="margin-top:4px;"><a href="'+escHtml(c.linkedin)+'" target="_blank" class="badge badge-linkedin">LinkedIn →</a></div>';
+    html += '<div class="tags-row">'+c.etiquetas.map(function(t){ return '<span class="badge badge-accent">'+escHtml(t)+'</span>'; }).join('')+'</div>';
+    html += '<div class="notes-box"><div class="notes-label">Notas</div>'+escHtml(c.notas)+'</div>';
+    html += '</div>';
+    html += '<button class="btn btn-secondary btn-sm" onclick="eliminarContacto('+i+')" style="flex-shrink:0;">✕</button>';
+    html += '</div></div>';
+  });
+  document.getElementById('contactos-list').innerHTML = html;
 }
 
 function eliminarContacto(idx) {
-  if(confirm('¿Eliminar este contacto?')) { contactos.splice(idx,1); renderContactosList(); }
+  if (confirm('¿Eliminar este contacto?')) { contactos.splice(idx,1); renderContactosList(); }
 }
 
-// ─── STEP 3: GOOGLE CONTACTS ──────────────────────────────
+// ── VERIFICACIÓN GC ────────────────────────────────────────
 function iniciarVerificacion() {
-  if(contactos.length===0) { goStep(1); return; }
-  if(!googleToken) {
+  if (contactos.length === 0) { goStep(1); return; }
+  if (!googleToken) {
     document.getElementById('p3-gc-warn').style.display = 'block';
-    mostrarResultadosSinGC(); return;
+    mostrarResultados(contactos.map(function(c){ c.exists=false; return c; })); return;
   }
   document.getElementById('p3-gc-warn').style.display = 'none';
   document.getElementById('p3-progress').style.display = 'block';
   document.getElementById('p3-result').style.display   = 'none';
-  animateProgress('p3-fill','p3-msg',
-    ['Conectando con Google Contacts...','Comparando emails...','Detectando duplicados...'],
-    () => {
-      contactos.forEach(c => {
-        c.exists = (c.email && gcEmails.includes(c.email.toLowerCase())) ||
-                   gcEmails.includes((c.nombreCompleto||c.nombre).toLowerCase());
-      });
-      mostrarResultados();
+  animateProgress('p3-fill','p3-msg',['Conectando con Google Contacts...','Comparando emails...','Detectando duplicados...'], function(){
+    contactos.forEach(function(c){
+      c.exists = (c.email && gcEmails.indexOf(c.email.toLowerCase())>=0) ||
+                 gcEmails.indexOf(c.nombreCompleto.toLowerCase())>=0;
     });
+    mostrarResultados(contactos);
+  });
 }
 
-function mostrarResultadosSinGC() {
-  contactos.forEach(c => c.exists=false);
-  mostrarResultados();
-}
-
-function mostrarResultados() {
-  const newC = contactos.filter(c=>!c.exists);
-  const exist = contactos.filter(c=>c.exists).length;
-  document.getElementById('m-total').textContent = contactos.length;
-  document.getElementById('m-exist').textContent = exist;
+function mostrarResultados(lista) {
+  var newC   = lista.filter(function(c){ return !c.exists; });
+  var numEx  = lista.filter(function(c){ return c.exists; }).length;
+  document.getElementById('m-total').textContent = lista.length;
+  document.getElementById('m-exist').textContent = numEx;
   document.getElementById('m-new').textContent   = newC.length;
-  document.getElementById('gc-list').innerHTML   = newC.map((c,i) => `
-    <div class="contact-card" id="gc-card-${i}">
-      <div class="contact-company">${c.empresa}</div>
-      <div class="contact-body">
-        <div class="avatar">${(c.nombre||'?')[0]}${(c.ap1||'')[0]||''}</div>
-        <div class="contact-info">
-          <div class="contact-name">${c.nombreCompleto||c.nombre}</div>
-          <div class="contact-role">${c.cargo}</div>
-          ${c.email ? `<div class="contact-email">${c.email}</div>` : ''}
-          ${c.tel  ? `<div class="contact-tel">📱 ${c.tel}</div>`  : ''}
-          ${c.fijo ? `<div class="contact-tel">📞 ${c.fijo}</div>` : ''}
-          ${c.linkedin ? `<div style="margin-top:4px;"><a href="${c.linkedin}" target="_blank" class="badge badge-linkedin">LinkedIn →</a></div>` : ''}
-          <div class="tags-row">${c.etiquetas.map(t=>`<span class="badge badge-accent">${t}</span>`).join('')}</div>
-          <div class="notes-box"><div class="notes-label">Notas</div>${c.notas}</div>
-        </div>
-        <button class="btn-add-sm" id="gc-btn-${i}" onclick="addSingleContact(${i})">+ Añadir</button>
-      </div>
-    </div>`).join('');
+  var html = '';
+  newC.forEach(function(c, i){
+    var initials = (c.nombre||'?')[0] + (c.ap1||'')[0];
+    html += '<div class="contact-card" id="gc-card-'+i+'">';
+    html += '<div class="contact-company">'+escHtml(c.empresa)+'</div>';
+    html += '<div class="contact-body">';
+    html += '<div class="avatar">'+escHtml(initials)+'</div>';
+    html += '<div class="contact-info">';
+    html += '<div class="contact-name">'+escHtml(c.nombreCompleto)+'</div>';
+    html += '<div class="contact-role">'+escHtml(c.cargo)+'</div>';
+    if (c.email)      html += '<div class="contact-email">'+escHtml(c.email)+'</div>';
+    if (c.tel)        html += '<div class="contact-tel">📱 '+escHtml(c.tel)+'</div>';
+    if (c.fijo)       html += '<div class="contact-tel">📞 '+escHtml(c.fijo)+'</div>';
+    if (c.webEmpresa) html += '<div style="margin-top:4px;"><a href="'+escHtml(c.webEmpresa)+'" target="_blank" class="badge badge-blue">🌐 Web empresa</a></div>';
+    if (c.linkedin)   html += '<div style="margin-top:4px;"><a href="'+escHtml(c.linkedin)+'" target="_blank" class="badge badge-linkedin">LinkedIn →</a></div>';
+    html += '<div class="tags-row">'+c.etiquetas.map(function(t){ return '<span class="badge badge-accent">'+escHtml(t)+'</span>'; }).join('')+'</div>';
+    html += '<div class="notes-box"><div class="notes-label">Notas</div>'+escHtml(c.notas)+'</div>';
+    html += '</div>';
+    html += '<button class="btn-add-sm" id="gc-btn-'+i+'" onclick="addSingleContact('+i+')">+ Añadir</button>';
+    html += '</div></div>';
+  });
+  document.getElementById('gc-list').innerHTML = html;
   document.getElementById('p3-progress').style.display = 'none';
   document.getElementById('p3-result').style.display   = 'block';
 }
 
-// ─── AÑADIR A GOOGLE CONTACTS ─────────────────────────────
+// ── AÑADIR A GOOGLE CONTACTS ───────────────────────────────
 async function crearContactoGC(c) {
-  const urls = [];
-  if(c.webEmpresa) urls.push({ value: c.webEmpresa, type: 'WORK',    formattedType: 'Empresa'  });
-  if(c.linkedin)   urls.push({ value: c.linkedin,   type: 'PROFILE', formattedType: 'LinkedIn' });
+  var urls = [];
+  if (c.webEmpresa) urls.push({ value: c.webEmpresa, type: 'WORK',    formattedType: 'Empresa'  });
+  if (c.linkedin)   urls.push({ value: c.linkedin,   type: 'PROFILE', formattedType: 'LinkedIn' });
 
-  // Resolver resourceNames de etiquetas (crear si no existen)
-  const memberships = [];
-  for(const etiq of c.etiquetas) {
-    const rn = await crearGrupoSiNoExiste(etiq);
-    if(rn) memberships.push({ contactGroupMembership: { contactGroupResourceName: rn } });
+  var memberships = [];
+  for (var j=0; j<c.etiquetas.length; j++) {
+    var rn = await crearGrupoSiNoExiste(c.etiquetas[j]);
+    if (rn) memberships.push({ contactGroupMembership: { contactGroupResourceName: rn }});
   }
 
-  const body = {
-    names: [{
-      givenName:  c.nombre || '',
-      middleName: c.ap1    || '',
-      familyName: c.ap2    || ''
-    }],
+  var body = {
+    names: [{ givenName: c.nombre||'', middleName: c.ap1||'', familyName: c.ap2||'' }],
     organizations: [{ name: c.empresa, title: c.cargo, type: 'WORK' }],
-    emailAddresses: c.email ? [{ value: c.email, type: 'WORK'   }] : [],
-    phoneNumbers: [
-      ...(c.tel  ? [{ value: c.tel,  type: 'MOBILE' }] : []),
-      ...(c.fijo ? [{ value: c.fijo, type: 'WORK'   }] : [])
-    ],
+    emailAddresses: c.email ? [{ value: c.email, type: 'WORK' }] : [],
+    phoneNumbers: [].concat(c.tel  ? [{ value: c.tel,  type: 'MOBILE' }] : [])
+                    .concat(c.fijo ? [{ value: c.fijo, type: 'WORK'   }] : []),
     biographies: [{ value: c.notas, contentType: 'TEXT_PLAIN' }],
     urls: urls,
     memberships: memberships
   };
 
-  console.log('Creando contacto GC:', JSON.stringify(body, null, 2));
-
-  const r = await fetch('https://people.googleapis.com/v1/people:createContact', {
+  console.log('Creando contacto:', c.nombreCompleto, body);
+  var r = await fetch('https://people.googleapis.com/v1/people:createContact', {
     method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + googleToken,
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Authorization': 'Bearer '+googleToken, 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
-
-  if(!r.ok) {
-    const err = await r.json().catch(()=>({}));
-    console.error('GC error:', r.status, JSON.stringify(err));
-    alert('Error Google Contacts: ' + (err.error?.message || r.status));
-  } else {
-    console.log('Contacto creado OK:', c.nombreCompleto);
+  if (!r.ok) {
+    var err = await r.json().catch(function(){ return {}; });
+    console.error('Error GC:', r.status, err);
+    alert('Error al crear "'+c.nombreCompleto+'": '+(err.error && err.error.message ? err.error.message : r.status));
   }
   return r.ok;
 }
 
 async function addSingleContact(i) {
-  const newC = contactos.filter(c=>!c.exists);
-  const c = newC[i];
-  const btn = document.getElementById('gc-btn-'+i);
+  var newC = contactos.filter(function(c){ return !c.exists; });
+  var c = newC[i];
+  var btn = document.getElementById('gc-btn-'+i);
   btn.textContent='...'; btn.disabled=true;
-
-  console.log('=== AÑADIR CONTACTO ===');
-  console.log('googleToken:', googleToken ? 'OK ('+googleToken.substring(0,20)+'...)' : 'NULL - NO HAY TOKEN');
-  console.log('Contacto:', c.nombreCompleto, c.empresa);
-
-  if(!googleToken) {
-    alert('No estás conectado a Google Contacts.\nPulsa el botón "Conectar Google Contacts" arriba a la derecha primero.');
-    btn.textContent='+ Añadir'; btn.disabled=false;
-    return;
+  if (!googleToken) {
+    alert('Conecta Google Contacts primero (botón arriba a la derecha).');
+    btn.textContent='+ Añadir'; btn.disabled=false; return;
   }
-
-  // Verificar que el token sigue válido
-  try {
-    const testR = await fetch('https://people.googleapis.com/v1/people/me?personFields=names', {
-      headers: { Authorization: 'Bearer '+googleToken }
-    });
-    console.log('Test token status:', testR.status);
-    if(testR.status === 401) {
-      alert('Tu sesión de Google ha expirado.\nPulsa de nuevo "Conectar Google Contacts".');
-      btn.textContent='+ Añadir'; btn.disabled=false;
-      googleToken = null;
-      document.getElementById('btn-google').style.display='';
-      document.getElementById('user-badge').style.display='none';
-      return;
-    }
-  } catch(e) {
-    console.error('Error verificando token:', e);
-  }
-
-  const ok = await crearContactoGC(c);
-  if(ok) {
+  var ok = await crearContactoGC(c);
+  if (ok) {
     btn.textContent='✓ Añadido';
     btn.style.cssText='background:var(--accent-light);border:1px solid var(--accent-border);color:var(--accent);height:28px;padding:0 10px;font-size:11px;border-radius:6px;cursor:default;font-family:inherit;';
     gcEmails.push((c.email||'').toLowerCase());
   } else {
-    btn.textContent='Error — ver consola';
-    btn.disabled=false;
-    btn.style.background='var(--red-bg)';
-    btn.style.color='var(--red)';
-    btn.style.borderColor='var(--red-border)';
+    btn.textContent='Error'; btn.disabled=false;
+    btn.style.background='var(--red-bg)'; btn.style.color='var(--red)'; btn.style.borderColor='var(--red-border)';
   }
 }
 
 async function addAllContacts() {
-  const btn = document.getElementById('add-all-btn');
+  var btn = document.getElementById('add-all-btn');
   btn.disabled=true; btn.textContent='Añadiendo...';
-  const newC = contactos.filter(c=>!c.exists);
-  for(let i=0; i<newC.length; i++) {
+  var newC = contactos.filter(function(c){ return !c.exists; });
+  for (var i=0; i<newC.length; i++) {
     await addSingleContact(i);
-    await new Promise(r=>setTimeout(r,400));
+    await new Promise(function(r){ setTimeout(r,500); });
   }
   btn.textContent='✓ Todos procesados';
 }
 
-// ─── EXPORTAR CSV ─────────────────────────────────────────
+// ── EXPORTAR CSV ───────────────────────────────────────────
 function exportarCSV() {
-  if(!contactos.length) { alert('No hay contactos para exportar.'); return; }
-  const headers = ['Nombre','Cargo','Empresa','Email','Teléfono','LinkedIn','Etiquetas','Notas'];
-  const rows = contactos.map(c => [
-    c.nombre, c.cargo, c.empresa, c.email||'', c.tel||'', c.linkedin||'',
-    c.etiquetas.join(' | '), c.notas.replace(/\n/g,' ')
-  ]);
-  const csv = [headers,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a = document.createElement('a');
+  if (!contactos.length) { alert('No hay contactos para exportar.'); return; }
+  var headers = ['Nombre','Primer apellido','Segundo apellido','Cargo','Empresa','Email','Móvil','Fijo','Web empresa','LinkedIn','Etiquetas','Notas'];
+  var rows = contactos.map(function(c){
+    return [c.nombre||'', c.ap1||'', c.ap2||'', c.cargo, c.empresa, c.email||'', c.tel||'', c.fijo||'', c.webEmpresa||'', c.linkedin||'', c.etiquetas.join(' | '), c.notas.replace(/\n/g,' ')];
+  });
+  var csv = [headers].concat(rows).map(function(r){
+    return r.map(function(v){ return '"'+String(v).replace(/"/g,'""')+'"'; }).join(',');
+  }).join('\n');
+  var a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));
   a.download = 'contactos_frigorificos_'+new Date().toISOString().slice(0,10)+'.csv';
   a.click();
